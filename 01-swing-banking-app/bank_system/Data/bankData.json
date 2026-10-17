@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "username": "Mengkong",
+    "balance": 50.0,
+    "password": "2218"
+  },
+  {
+    "id": 2,
+    "username": "Lika",
+    "balance": 100.0,
+    "password": "1294"
+  },
+  {
+    "id": 4,
+    "username": "Seavnam",
+    "balance": 45.0,
+    "password": "#1234"
+  },
+  {
+    "id": 5,
+    "username": "Bill Gate",
+    "balance": 0.0,
+    "password": "12345"
+  },
+  {
+    "id": 6,
+    "username": "Nana",
+    "balance": 85.0,
+    "password": "1234"
+  },
+  {
+    "id": 7,
+    "username": "Esma",
+    "balance": 50.0,
+    "password": "1234"
+  },
+  {
+    "id": 8,
+    "username": "Granger",
+    "balance": 150.0,
+    "password": "1234"
+  }
+]
