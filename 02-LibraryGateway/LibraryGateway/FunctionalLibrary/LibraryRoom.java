@@ -20,7 +20,7 @@ public class LibraryRoom {
     }
 
     public void displayFullRoom() {
-        System.out.print(this.roomLabel);
+        System.out.print(this.getRoomLabel() + " -----------");
         for (int i = 0; i < capacity; i++) {
             String status = String.valueOf(i + 1);
             if (i % 10 == 0)

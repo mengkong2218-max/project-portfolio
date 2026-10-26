@@ -7,7 +7,7 @@ public class ComputerRoom extends LibraryRoom {
 
     @Override
     public void displayFullRoom() {
-        System.out.print(this.getRoomLabel());
+        System.out.print(this.getRoomLabel() + " -----------");
         for (int i = 0; i < this.getCapacity(); i++) {
             String status = String.valueOf(i + 1);
             if (i % 5 == 0)
