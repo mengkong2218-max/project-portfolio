@@ -8,23 +8,29 @@ import LibraryGateway.Patron.Patron;
 
 public class LibraryRoom {
     private int capacity;
+    private String roomLabel;
     private List<StudyDesk> studyDesk = new ArrayList<>();
 
-    public LibraryRoom(int capacity) {
+    public LibraryRoom(String roomLabel, int capacity) {
         this.capacity = capacity;
+        this.roomLabel = roomLabel;
         for (int i = 0; i < this.capacity; i++) {
             studyDesk.add(new StudyDesk(i + 1));
         }
     }
 
     public void displayFullRoom() {
+        System.out.print(this.roomLabel);
         for (int i = 0; i < capacity; i++) {
             String status = String.valueOf(i + 1);
             if (i % 10 == 0)
                 System.out.print("\n");
             if (studyDesk.get(i).isTaken())
                 status = "x";
-            System.out.print("[" + status + "] ");
+            if (i < 10)
+                System.out.print("[" + status + "]   ");
+            else
+                System.out.print("[" + status + "]  ");
         }
         System.out.println();
     }
@@ -64,4 +70,29 @@ public class LibraryRoom {
     private void assignPatronToDeskNumber(Patron patron, int deskNumber) {
         studyDesk.get(deskNumber - 1).assignPatron(patron);
     }
+
+    public String getRoomLabel() {
+        return roomLabel;
+    }
+
+    public void setRoomLabel(String roomLabel) {
+        this.roomLabel = roomLabel;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public List<StudyDesk> getStudyDesk() {
+        return studyDesk;
+    }
+
+    public void setStudyDesk(List<StudyDesk> studyDesk) {
+        this.studyDesk = studyDesk;
+    }
+
 }
