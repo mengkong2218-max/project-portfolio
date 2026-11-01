@@ -20,10 +20,22 @@ public class GameWindow {
         blueCar.setBounds(0, 0, gameWindow_X, 200);
         System.out.println(blueCar.getWidth() + " : " + blueCar.getHeight());
 
-        blueCar.setCarPosition(gameWindow_X / 2, gameWindow_Y / 2);
+        blueCar.setCarPosition(0, 50);
+        blueCar.startMoving();
         blueCar.displayCar();
-
+        blueCar.setCarSpeed(10);
         gameWindow.add(blueCar);
+
+        CarPanel redCar = new CarPanel("../Img/RedCarImg.png");
+        redCar.setBackground(Color.RED);
+        redCar.setBounds(0, 300, gameWindow_X, 200);
+        System.out.println(redCar.getWidth() + " : " + redCar.getHeight());
+
+        redCar.setCarPosition(0, 50);
+        redCar.startMoving();
+        redCar.displayCar();
+        redCar.setCarSpeed(15);
+        gameWindow.add(redCar);
 
         gameWindow.setVisible(true);
     }
