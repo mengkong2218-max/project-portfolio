@@ -1,39 +1,23 @@
-package SimpleRacingGame.ImgAssistant;
+// package SimpleRacingGame.ImgAssistant;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+// import java.awt.Graphics2D;
+// import java.awt.image.BufferedImage;
 
-import javax.swing.JPanel;
+// public class ImageGetter {
 
-public class ImageGetter extends JPanel {
-    private int imageWidth;
-    private int imageHeight;
-    private double angle = 0;
-    private String filePath;
-    private ImageLoader getImg;
+// private BufferedImage image;
+// private int width;
+// private int height;
 
-    public ImageGetter(String filePath) {
-        this.filePath = filePath;
-        getImg = new ImageLoader(this.filePath);
-    }
+// public ImageGetter(String filePath, int width, int height) {
+// this.width = width;
+// this.height = height;
 
-    public ImageGetter(String filePath, int imgWidth, int imgHeight) {
-        this.filePath = filePath;
-        getImg = new ImageLoader(this.filePath);
-        this.imageWidth = imgWidth;
-        this.imageHeight = imgHeight;
-    }
+// ImageLoader loader = new ImageLoader(filePath);
+// this.image = loader.image;
+// }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        int imgX = (getWidth() - this.imageWidth) / 2;
-        int imgY = (getHeight() - this.imageHeight) / 2;
-        getImg.showImage(g2d, imgX, imgY, imageWidth, imageHeight, this.angle);
-    }
-
-    public void rotateAngle(double angle) {
-        this.angle = angle;
-    }
-}
+// public void draw(Graphics2D g2d) {
+// g2d.drawImage(image, -width / 2, -height / 2, width, height, null);
+// }
+// }
