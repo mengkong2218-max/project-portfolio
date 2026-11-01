@@ -23,7 +23,7 @@ public class GameWindow {
         blueCar.setCarPosition(0, 50);
         blueCar.startMoving();
         blueCar.displayCar();
-        blueCar.setCarSpeed(10);
+        blueCar.setCarSpeed(5);
         gameWindow.add(blueCar);
 
         CarPanel redCar = new CarPanel("../Img/RedCarImg.png");
@@ -34,7 +34,7 @@ public class GameWindow {
         redCar.setCarPosition(0, 50);
         redCar.startMoving();
         redCar.displayCar();
-        redCar.setCarSpeed(15);
+        redCar.setCarSpeed(5);
         gameWindow.add(redCar);
 
         gameWindow.setVisible(true);

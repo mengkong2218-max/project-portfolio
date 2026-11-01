@@ -34,7 +34,7 @@ public class CarPanel extends JPanel {
     }
 
     public void startMoving() {
-        Timer timer = new Timer(16, new ActionListener() {
+        Timer timer = new Timer(35, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 posX += carSpeed;
