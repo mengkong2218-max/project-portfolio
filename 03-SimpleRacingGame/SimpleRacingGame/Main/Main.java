@@ -1,11 +1,12 @@
 package SimpleRacingGame.Main;
 
+import javax.swing.SwingUtilities;
+
 import SimpleRacingGame.UI.GameWindow;
 
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello this is my first game project");
-        new GameWindow();
+        SwingUtilities.invokeLater(() -> new GameWindow());
     }
 }
