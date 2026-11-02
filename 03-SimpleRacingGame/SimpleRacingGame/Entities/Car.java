@@ -19,9 +19,11 @@ public class Car extends ImageLoader {
     private int carHeight = 70;
     private double carSpeed = 5;
     private int carX = 0;
+    private String carName;
 
     public Car(String filePath) {
         this.myCarImg = ImageLoader.loadMyImage(filePath);
+        this.carName = "My Car";
     }
 
     @Override
@@ -85,4 +87,13 @@ public class Car extends ImageLoader {
     public double getCarSpeed() {
         return this.carSpeed;
     }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
+    }
+
 }

@@ -3,6 +3,7 @@ package SimpleRacingGame.UI;
 import SimpleRacingGame.Entities.Car;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -19,14 +20,25 @@ public class CarPanel extends JPanel {
     private JLabel lapLabel;
     private int lapCount;
     private int lapLabelWidth, lapLabelHeight;
+    private Timer timer;
+    private GameWindow game;
 
-    public CarPanel(String filePath) {
+    public CarPanel(String filePath, GameWindow game) {
+        this.game = game;
         this.setLayout(null);
         myCar = new Car(filePath);
         carImg = myCar.getMyImageAsJPanelObject();
         carImg.setOpaque(false);
         carImg.setSize(myCar.getCarWidth(), myCar.getCarHeight());
         lapLabel = new JLabel();
+
+        lapLabel.setText(String.valueOf(lapCount));
+        lapLabel.setFont(new Font(null, Font.BOLD, 40));
+        lapLabel.setForeground(Color.WHITE);
+
+        this.add(lapLabel);
+        this.add(carImg);
+
     }
 
     public void drivingTheCar(int x) {
@@ -35,41 +47,61 @@ public class CarPanel extends JPanel {
         carImg.setLocation(carPosX, carPosY);
     }
 
-    public void addLapLabel() {
-        lapLabel.setText(String.valueOf(lapCount));
-        lapLabel.setBounds(GameWindow.gameWindow_X - lapLabelWidth, 0, lapLabelWidth, lapLabelHeight);
-        lapLabel.setFont(new Font(null, Font.BOLD, 40));
-        lapLabel.setForeground(Color.WHITE);
-        // System.out.println("\r Lap label: " + this.getWidth() * (int) 0.1 + " : " +
-        // this.getHeight());
-        System.out.print("\r " + lapLabelWidth + " : " + lapLabelHeight);
-        this.add(lapLabel);
-    }
-
-    public void displayCar() {
-        this.add(carImg);
-    }
-
-    public void startMoving() {
-        Timer timer = new Timer(16, new ActionListener() {
+    private void startMoving() {
+        timer = new Timer(16, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int max = 30, min = 5;
+                System.out.print("is it over: " + game.isRaceOverYet() + "\n");
+                if (game.isRaceOverYet()) {
+                    System.out.print(" : " + game.isRaceOverYet());
+                    drivingTheCar(0);
+                    timer.stop();
+                    return;
+                }
+
+                int max = 20, min = 3;
                 carPosX += (int) (Math.random() * (max - min + 1)) + 1;
                 drivingTheCar(carPosX);
                 if (carPosX >= getWidth()) {
                     carPosX = 0;
                     lapCount++;
+
+                    if (reachLapToFinsih(5)) {
+                        game.raceIsOver();
+                        JOptionPane.showMessageDialog(null, myCar.getCarName() + " has finsihed the Lap", "The Winner",
+                                JOptionPane.OK_OPTION);
+                        System.out.print("We have found the winner.");
+                    }
                 }
 
                 lapLabelWidth = getWidth() * 5 / 100;
                 lapLabelHeight = getHeight();
-                // System.out.println("Car Position: ( " + carPosX + " , " + carPosY + " ) ");
                 carImg.repaint();
-                addLapLabel();
+                lapLabel.setBounds(GameWindow.gameWindow_X - lapLabelWidth, 0, lapLabelWidth, lapLabelHeight);
+                lapLabel.setText(String.valueOf(lapCount));
             }
         });
+
+    }
+
+    public void startTheGame() {
+        this.startMoving();
         timer.start();
     }
 
+    private boolean reachLapToFinsih(int lapSizePreffered) {
+        if (this.lapCount >= lapSizePreffered) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public String getCarName() {
+        return myCar.getCarName();
+    }
+
+    public void setCarName(String carName) {
+        myCar.setCarName(carName);
+    }
 }
