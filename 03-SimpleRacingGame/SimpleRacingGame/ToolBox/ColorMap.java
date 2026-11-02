@@ -14,6 +14,7 @@ public class ColorMap {
         colourMaps.put("RED", Color.RED);
         colourMaps.put("YELLOW", Color.YELLOW);
         colourMaps.put("PURPLE", Color.MAGENTA);
+        colourMaps.put("ORANGE", Color.ORANGE);
     }
 
     public static Color getColor(String colorInString) {

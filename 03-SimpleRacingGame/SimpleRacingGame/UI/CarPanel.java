@@ -59,7 +59,7 @@ public class CarPanel extends JPanel {
                     return;
                 }
 
-                int max = 20, min = 3;
+                int max = 30, min = 5;
                 carPosX += (int) (Math.random() * (max - min + 1)) + 1;
                 drivingTheCar(carPosX);
                 if (carPosX >= getWidth()) {
