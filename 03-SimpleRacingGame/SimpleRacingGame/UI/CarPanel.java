@@ -47,7 +47,7 @@ public class CarPanel extends JPanel {
         carImg.setLocation(carPosX, carPosY);
     }
 
-    private void startMoving() {
+    public void displayingTheCar() {
         timer = new Timer(16, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -85,7 +85,6 @@ public class CarPanel extends JPanel {
     }
 
     public void startTheGame() {
-        this.startMoving();
         timer.start();
     }
 

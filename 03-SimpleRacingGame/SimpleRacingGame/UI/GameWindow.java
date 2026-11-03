@@ -13,6 +13,8 @@ public class GameWindow {
     public static final int gameWindow_Y = 720;
     private boolean isRaceOver = false;
 
+    private List<CarPanel> cars = new ArrayList<>();
+
     public GameWindow() {
         List<String> colors = new ArrayList<>(List.of("Red", "Blue", "Green", "Grey", "Yellow", "Orange"));
         JFrame gameWindow = new JFrame();
@@ -26,9 +28,11 @@ public class GameWindow {
             CarPanel colorCar = new CarPanel("../Img/" + color + "CarImg.png", this);
             colorCar.setBackground(ColorMap.getColor(color));
             colorCar.setCarName(color + " Car");
-            colorCar.startTheGame();
+            colorCar.displayingTheCar();
+            cars.add(colorCar);
             gameWindow.add(colorCar);
         }
+
         gameWindow.setVisible(true);
     }
 
@@ -39,6 +43,11 @@ public class GameWindow {
     public void raceIsOver() {
         if (!this.isRaceOverYet())
             this.isRaceOver = true;
+    }
+
+    public void startTheGame() {
+        for (CarPanel car : cars)
+            car.startTheGame();
     }
 
 }
