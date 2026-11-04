@@ -2,6 +2,7 @@ package SimpleRacingGame.UI;
 
 import SimpleRacingGame.Entities.Car;
 
+import SimpleRacingGame.ToolBox.Random;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -60,7 +61,7 @@ public class CarPanel extends JPanel {
                 }
 
                 int max = 30, min = 5;
-                carPosX += (int) (Math.random() * (max - min + 1)) + 1;
+                carPosX += Random.inRange(min, max);
                 drivingTheCar(carPosX);
                 if (carPosX >= getWidth()) {
                     carPosX = 0;

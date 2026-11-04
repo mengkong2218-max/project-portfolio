@@ -7,6 +7,9 @@ import SimpleRacingGame.UI.GameWindow;
 public class Main {
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GameWindow());
+        SwingUtilities.invokeLater(() -> {
+            GameWindow myGame = new GameWindow();
+            myGame.start();
+        });
     }
 }
