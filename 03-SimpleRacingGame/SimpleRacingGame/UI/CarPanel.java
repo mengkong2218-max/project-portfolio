@@ -55,8 +55,6 @@ public class CarPanel extends JPanel {
                 if (game.isRaceOverYet()) {
                     drivingTheCar(0);
                     timer.stop();
-                    game.exitTheGame();
-                    new StartAgain();
                     return;
                 }
 
@@ -70,6 +68,8 @@ public class CarPanel extends JPanel {
                     if (reachLapToFinsih(6)) {
                         game.raceIsOver();
                         getTheResult();
+                        game.exitTheGame();
+                        new StartAgain();
                     }
                 }
 

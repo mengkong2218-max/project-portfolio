@@ -40,10 +40,10 @@ public class GameWindow {
             cars.add(colorCar);
         }
         gameWindow.add(gameRunningPanel);
-        gameWindow.setVisible(true);
     }
 
     public void start() {
+        gameWindow.setVisible(true);
         this.displayTheCar();
         this.carSelectionWindow();
         if (this.isGameStarted()) {
@@ -101,6 +101,7 @@ public class GameWindow {
     }
 
     public void exitTheGame() {
+        gameWindow.setVisible(false);
         gameWindow.dispose();
     }
 
