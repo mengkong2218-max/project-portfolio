@@ -14,10 +14,13 @@ public class GameWindow {
     public static final int gameWindow_X = 1280;
     public static final int gameWindow_Y = 720;
     public static List<String> colors = new ArrayList<>(List.of("Red", "Blue", "Green", "Grey", "Yellow", "Orange"));
+    private String pickedItem;
     private boolean isRaceOver = false;
+    private boolean gameStarted = false;
     JFrame gameWindow;
     JLayeredPane windowLinked;
     JPanel gameRunningPanel;
+    CarSelectionPanel carOption;
     private List<CarPanel> cars = new ArrayList<>();
 
     public GameWindow() {
@@ -33,7 +36,7 @@ public class GameWindow {
         for (String color : colors) {
             CarPanel colorCar = new CarPanel("../Img/" + color + "CarImg.png", this);
             colorCar.setBackground(ColorMap.getColor(color));
-            colorCar.setCarName(color + " Car");
+            colorCar.setCarName(color);
             cars.add(colorCar);
         }
         gameWindow.add(gameRunningPanel);
@@ -43,6 +46,10 @@ public class GameWindow {
     public void start() {
         this.displayTheCar();
         this.carSelectionWindow();
+        if (this.isGameStarted()) {
+            this.startTheGame();
+            System.out.println(this.gameStarted);
+        }
     }
 
     private void carSelectionWindow() {
@@ -50,7 +57,9 @@ public class GameWindow {
         window.setSize(500, 500);
         window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.add(new CarSelectionPanel());
+
+        carOption = new CarSelectionPanel(this, window);
+        window.add(carOption);
         window.setVisible(true);
     }
 
@@ -63,7 +72,7 @@ public class GameWindow {
             this.isRaceOver = true;
     }
 
-    private void startTheGame() {
+    public void startTheGame() {
         for (CarPanel car : cars)
             car.startTheGame();
     }
@@ -74,4 +83,25 @@ public class GameWindow {
             gameRunningPanel.add(car);
         }
     }
+
+    public void setPickedItem(String pickedItem) {
+        this.pickedItem = pickedItem;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        this.gameStarted = gameStarted;
+    }
+
+    public String getPickedItem() {
+        return pickedItem;
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public void exitTheGame() {
+        gameWindow.dispose();
+    }
+
 }

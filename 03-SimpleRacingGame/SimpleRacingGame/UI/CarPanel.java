@@ -52,11 +52,11 @@ public class CarPanel extends JPanel {
         timer = new Timer(16, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("is it over: " + game.isRaceOverYet() + "\n");
                 if (game.isRaceOverYet()) {
-                    System.out.print(" : " + game.isRaceOverYet());
                     drivingTheCar(0);
                     timer.stop();
+                    game.exitTheGame();
+                    new StartAgain();
                     return;
                 }
 
@@ -67,11 +67,9 @@ public class CarPanel extends JPanel {
                     carPosX = 0;
                     lapCount++;
 
-                    if (reachLapToFinsih(5)) {
+                    if (reachLapToFinsih(6)) {
                         game.raceIsOver();
-                        JOptionPane.showMessageDialog(null, myCar.getCarName() + " has finsihed the Lap", "The Winner",
-                                JOptionPane.OK_OPTION);
-                        System.out.print("We have found the winner.");
+                        getTheResult();
                     }
                 }
 
@@ -83,6 +81,16 @@ public class CarPanel extends JPanel {
             }
         });
 
+    }
+
+    private void getTheResult() {
+        if (myCar.getCarName().equals(game.getPickedItem()))
+            JOptionPane.showMessageDialog(null, myCar.getCarName() + " has won. You are the Winner", "Victory",
+                    JOptionPane.INFORMATION_MESSAGE);
+        else
+            JOptionPane.showMessageDialog(null,
+                    myCar.getCarName() + " has won. You Lost. [" + game.getPickedItem() + "]", "Defeat",
+                    JOptionPane.ERROR_MESSAGE);
     }
 
     public void startTheGame() {
