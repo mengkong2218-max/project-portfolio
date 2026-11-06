@@ -46,10 +46,6 @@ public class GameWindow {
         gameWindow.setVisible(true);
         this.displayTheCar();
         this.carSelectionWindow();
-        if (this.isGameStarted()) {
-            this.startTheGame();
-            System.out.println(this.gameStarted);
-        }
     }
 
     private void carSelectionWindow() {

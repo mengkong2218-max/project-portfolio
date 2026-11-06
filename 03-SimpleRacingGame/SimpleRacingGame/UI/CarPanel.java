@@ -3,34 +3,33 @@ package SimpleRacingGame.UI;
 import SimpleRacingGame.Entities.Car;
 
 import SimpleRacingGame.ToolBox.Random;
+
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CarPanel extends JPanel {
 
     private Car myCar;
-    private JPanel carImg;
-    private int carPosX, carPosY;
     private JLabel lapLabel;
     private int lapCount;
     private int lapLabelWidth, lapLabelHeight;
     private Timer timer;
     private GameWindow game;
+    private String filePath;
 
     public CarPanel(String filePath, GameWindow game) {
+        this.filePath = filePath;
         this.game = game;
         this.setLayout(null);
         myCar = new Car(filePath);
-        carImg = myCar.getMyImageAsJPanelObject();
-        carImg.setOpaque(false);
-        carImg.setSize(myCar.getCarWidth(), myCar.getCarHeight());
         lapLabel = new JLabel();
 
         lapLabel.setText(String.valueOf(lapCount));
@@ -38,14 +37,12 @@ public class CarPanel extends JPanel {
         lapLabel.setForeground(Color.WHITE);
 
         this.add(lapLabel);
-        this.add(carImg);
 
     }
 
     public void drivingTheCar(int x) {
-        this.carPosX = x;
-        this.carPosY = (this.getHeight() - myCar.getCarHeight()) / 2;
-        carImg.setLocation(carPosX, carPosY);
+        myCar.setCarX(x);
+        repaint();
     }
 
     public void displayingTheCar() {
@@ -59,23 +56,21 @@ public class CarPanel extends JPanel {
                 }
 
                 int max = 30, min = 5;
-                carPosX += Random.inRange(min, max);
+                int carPosX = myCar.getCarX() + Random.inRange(min, max);
                 drivingTheCar(carPosX);
                 if (carPosX >= getWidth()) {
                     carPosX = 0;
+                    drivingTheCar(carPosX);
                     lapCount++;
 
                     if (reachLapToFinsih(6)) {
                         game.raceIsOver();
                         getTheResult();
-                        game.exitTheGame();
-                        new StartAgain();
                     }
                 }
 
                 lapLabelWidth = getWidth() * 5 / 100;
                 lapLabelHeight = getHeight();
-                carImg.repaint();
                 lapLabel.setBounds(GameWindow.gameWindow_X - lapLabelWidth, 0, lapLabelWidth, lapLabelHeight);
                 lapLabel.setText(String.valueOf(lapCount));
             }
@@ -83,14 +78,27 @@ public class CarPanel extends JPanel {
 
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (myCar != null && myCar.getMyCarImg() != null) {
+            int y = (getHeight() - myCar.getCarHeight()) / 2;
+            g.drawImage(myCar.getMyCarImg(), myCar.getCarX(), y, myCar.getCarWidth(), myCar.getCarHeight(), this);
+        }
+    }
+
     private void getTheResult() {
+        JFrame resultFrame = new JFrame();
+        resultFrame.setSize(500, 500);
+        resultFrame.setResizable(false);
+        resultFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        String result = "You Lose";
         if (myCar.getCarName().equals(game.getPickedItem()))
-            JOptionPane.showMessageDialog(null, myCar.getCarName() + " has won. You are the Winner", "Victory",
-                    JOptionPane.INFORMATION_MESSAGE);
-        else
-            JOptionPane.showMessageDialog(null,
-                    myCar.getCarName() + " has won. You Lost. [" + game.getPickedItem() + "]", "Defeat",
-                    JOptionPane.ERROR_MESSAGE);
+            result = "You Win";
+        CarResultPanel resultPanel = new CarResultPanel(filePath, game, resultFrame, result);
+        resultFrame.add(resultPanel);
+        resultFrame.setVisible(true);
     }
 
     public void startTheGame() {
