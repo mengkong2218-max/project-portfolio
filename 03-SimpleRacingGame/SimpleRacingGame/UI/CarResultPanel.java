@@ -47,6 +47,8 @@ public class CarResultPanel extends JPanel {
             this.add(newImg);
             buttonPanel.add(okayButton, BorderLayout.CENTER);
             buttonPanel.remove(conButton);
+            this.revalidate();
+            this.repaint();
         });
 
         okayButton.addActionListener(e -> {
