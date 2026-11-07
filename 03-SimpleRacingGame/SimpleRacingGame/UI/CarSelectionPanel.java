@@ -9,14 +9,14 @@ import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 public class CarSelectionPanel extends JPanel {
     private String item;
     private boolean isClicked = false;
 
-    public CarSelectionPanel(GameWindow gw, JFrame frame) {
+    public CarSelectionPanel(GameWindow gw, JLayeredPane layer) {
         this.setSize(500, 500);
         this.setLayout(null);
 
@@ -56,7 +56,7 @@ public class CarSelectionPanel extends JPanel {
             this.isClicked = true;
             gw.setPickedItem(this.item);
             gw.setGameStarted(isClicked);
-            frame.dispose();
+            layer.remove(this);
             gw.startTheGame();
         });
 

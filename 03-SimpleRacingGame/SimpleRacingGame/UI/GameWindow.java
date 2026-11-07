@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import SimpleRacingGame.Entities.Car;
 import SimpleRacingGame.ToolBox.ColorMap;
 
 public class GameWindow {
@@ -17,21 +18,22 @@ public class GameWindow {
     private String pickedItem;
     private boolean isRaceOver = false;
     private boolean gameStarted = false;
-    JFrame gameWindow;
-    JLayeredPane windowLinked;
-    JPanel gameRunningPanel;
-    CarSelectionPanel carOption;
+    private JFrame gameWindow;
+    private JLayeredPane gameRunningPanel;
+    private CarSelectionPanel carOption;
     private List<CarPanel> cars = new ArrayList<>();
+    private JPanel showCarPanel;
 
     public GameWindow() {
         gameWindow = new JFrame();
         gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameWindow.setResizable(false);
+        gameWindow.setLayout(null);
         gameWindow.setSize(gameWindow_X, gameWindow_Y);
 
-        windowLinked = new JLayeredPane();
-        gameRunningPanel = new JPanel();
-        gameRunningPanel.setLayout(new GridLayout(colors.size(), 1));
+        gameRunningPanel = new JLayeredPane();
+        gameRunningPanel.setBounds(0, 0, gameWindow_X, gameWindow_Y);
+        ;
 
         for (String color : colors) {
             CarPanel colorCar = new CarPanel("../Img/" + color + "CarImg.png", this);
@@ -49,35 +51,30 @@ public class GameWindow {
     }
 
     private void carSelectionWindow() {
-        JFrame window = new JFrame();
-        window.setSize(500, 500);
-        window.setResizable(false);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        carOption = new CarSelectionPanel(this, window);
-        window.add(carOption);
-        window.setVisible(true);
-    }
-
-    public boolean isRaceOverYet() {
-        return this.isRaceOver;
-    }
-
-    public void raceIsOver() {
-        if (!this.isRaceOverYet())
-            this.isRaceOver = true;
-    }
-
-    public void startTheGame() {
-        for (CarPanel car : cars)
-            car.startTheGame();
+        carOption = new CarSelectionPanel(this, gameRunningPanel);
+        carOption.setBounds(390, 110, 500, 450);
+        gameRunningPanel.add(carOption, Integer.valueOf(1));
     }
 
     private void displayTheCar() {
+        showCarPanel = new JPanel();
+        showCarPanel.setLayout(new GridLayout(colors.size(), 1));
+        showCarPanel.setBounds(0, -10, GameWindow.gameWindow_X, GameWindow.gameWindow_Y);
         for (CarPanel car : cars) {
             car.displayingTheCar();
-            gameRunningPanel.add(car);
+            showCarPanel.add(car);
         }
+        gameRunningPanel.add(showCarPanel, Integer.valueOf(0));
+    }
+
+    public void getTheResult(String filePath, Car myCar) {
+
+        String result = "You Lose";
+        if (myCar.getCarName().equals(this.getPickedItem()))
+            result = "You Win";
+        CarResultPanel resultPanel = new CarResultPanel(filePath, this, gameRunningPanel, result);
+        resultPanel.setBounds(390, 110, 500, 450);
+        gameRunningPanel.add(resultPanel, Integer.valueOf(1));
     }
 
     public void setPickedItem(String pickedItem) {
@@ -101,4 +98,17 @@ public class GameWindow {
         gameWindow.dispose();
     }
 
+    public boolean isRaceOverYet() {
+        return this.isRaceOver;
+    }
+
+    public void raceIsOver() {
+        if (!this.isRaceOverYet())
+            this.isRaceOver = true;
+    }
+
+    public void startTheGame() {
+        for (CarPanel car : cars)
+            car.startTheGame();
+    }
 }

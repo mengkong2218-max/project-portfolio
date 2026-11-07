@@ -4,7 +4,6 @@ import SimpleRacingGame.Entities.Car;
 
 import SimpleRacingGame.ToolBox.Random;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -65,7 +64,7 @@ public class CarPanel extends JPanel {
 
                     if (reachLapToFinsih(6)) {
                         game.raceIsOver();
-                        getTheResult();
+                        game.getTheResult(filePath, myCar);
                     }
                 }
 
@@ -85,20 +84,6 @@ public class CarPanel extends JPanel {
             int y = (getHeight() - myCar.getCarHeight()) / 2;
             g.drawImage(myCar.getMyCarImg(), myCar.getCarX(), y, myCar.getCarWidth(), myCar.getCarHeight(), this);
         }
-    }
-
-    private void getTheResult() {
-        JFrame resultFrame = new JFrame();
-        resultFrame.setSize(500, 500);
-        resultFrame.setResizable(false);
-        resultFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        String result = "You Lose";
-        if (myCar.getCarName().equals(game.getPickedItem()))
-            result = "You Win";
-        CarResultPanel resultPanel = new CarResultPanel(filePath, game, resultFrame, result);
-        resultFrame.add(resultPanel);
-        resultFrame.setVisible(true);
     }
 
     public void startTheGame() {

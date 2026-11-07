@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -12,7 +12,7 @@ import SimpleRacingGame.ImgAssistant.ImageLoader;
 
 public class CarResultPanel extends JPanel {
 
-    public CarResultPanel(String filePath, GameWindow game, JFrame frame, String result) {
+    public CarResultPanel(String filePath, GameWindow game, JLayeredPane layer, String result) {
         this.setLayout(null);
         this.setSize(500, 500);
 
@@ -52,7 +52,7 @@ public class CarResultPanel extends JPanel {
         });
 
         okayButton.addActionListener(e -> {
-            frame.dispose();
+            layer.remove(this);
             game.exitTheGame();
             new StartAgain();
         });
