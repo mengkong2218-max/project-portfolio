@@ -33,7 +33,6 @@ public class GameWindow {
 
         gameRunningPanel = new JLayeredPane();
         gameRunningPanel.setBounds(0, 0, gameWindow_X, gameWindow_Y);
-        ;
 
         for (String color : colors) {
             CarPanel colorCar = new CarPanel("../Img/" + color + "CarImg.png", this);
@@ -51,7 +50,7 @@ public class GameWindow {
     }
 
     private void carSelectionWindow() {
-        carOption = new CarSelectionPanel(this, gameRunningPanel);
+        carOption = new CarSelectionPanel(this);
         carOption.setBounds(390, 110, 500, 450);
         gameRunningPanel.add(carOption, Integer.valueOf(1));
     }
@@ -68,11 +67,10 @@ public class GameWindow {
     }
 
     public void getTheResult(String filePath, Car myCar) {
-
         String result = "You Lose";
         if (myCar.getCarName().equals(this.getPickedItem()))
             result = "You Win";
-        CarResultPanel resultPanel = new CarResultPanel(filePath, this, gameRunningPanel, result);
+        CarResultPanel resultPanel = new CarResultPanel(filePath, this, result);
         resultPanel.setBounds(390, 110, 500, 450);
         gameRunningPanel.add(resultPanel, Integer.valueOf(1));
     }
@@ -110,5 +108,9 @@ public class GameWindow {
     public void startTheGame() {
         for (CarPanel car : cars)
             car.startTheGame();
+    }
+
+    public void closeALayerOfLayeredPanel(JPanel panel) {
+        gameRunningPanel.remove(panel);
     }
 }
