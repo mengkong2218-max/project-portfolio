@@ -5,6 +5,7 @@ out/
 .kotlin
 .idea
 .gitignore
+*.xml
 *.db
 *.iml
 Data/
