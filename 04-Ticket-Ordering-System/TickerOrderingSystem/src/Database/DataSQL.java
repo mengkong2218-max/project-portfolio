@@ -1,9 +1,6 @@
 package Database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DataSQL {
     private static final String data = "jdbc:sqlite:Data/data.db";
@@ -32,6 +29,22 @@ public class DataSQL {
             System.out.println("Can not Perform the Action");
             this.connectToFile = false;
         }
+    }
+
+    public ResultSet loadData(String table) {
+        if (!table.equals("users") && !table.equals("event") && !table.equals("ordering_table")) {
+            System.out.println("No Database Found.");
+            this.connectToFile = false;
+            return null;
+        }
+        String task = "SELECT * FROM " + table + ";";
+        try (PreparedStatement prestate = this.conn.prepareStatement(task)) {
+            return prestate.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            this.connectToFile = false;
+        }
+        return null;
     }
 
     public boolean isConnectedToFile() {
