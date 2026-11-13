@@ -1,11 +1,13 @@
 package Database;
 
+
 import java.sql.*;
 
 public class DataSQL {
     private static final String data = "jdbc:sqlite:Data/data.db";
     private boolean connectToFile = false;
     private Connection conn;
+    private boolean executeSuccessfully;
 
     private void createMainTable() throws SQLException {
         String userTable = this.createUserTable();
@@ -38,13 +40,58 @@ public class DataSQL {
             return null;
         }
         String task = "SELECT * FROM " + table + ";";
-        try (PreparedStatement prestate = this.conn.prepareStatement(task)) {
-            return prestate.executeQuery();
-        } catch (SQLException e) {
+        return this.executeQueryCommand(task);
+    }
+
+    public ResultSet executeQueryCommand(String cmd, Object... objs) {
+        try {
+            PreparedStatement preState = this.conn.prepareStatement(cmd);
+            for (int i = 0; i < objs.length; i++) {
+                preState.setObject(i + 1, objs[i]);
+            }
+            this.executeSuccessfully = true;
+            return preState.executeQuery();
+        } catch (Exception e) {
             e.printStackTrace();
-            this.connectToFile = false;
+            this.executeSuccessfully = false;
         }
         return null;
+    }
+
+    public void executeUpdateCommand(String cmd, Object... objs) {
+        try (PreparedStatement preState = this.conn.prepareStatement(cmd)) {
+            for (int i = 0; i < objs.length; i++) {
+                preState.setObject(i + 1, objs[i]);
+            }
+            this.executeSuccessfully = true;
+            preState.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.executeSuccessfully = false;
+        }
+    }
+
+    public int executeInsert(String cmd, Object... objs) {
+        try (PreparedStatement preState = this.conn.prepareStatement(cmd, Statement.RETURN_GENERATED_KEYS)) {
+            for (int i = 0; i < objs.length; i++) {
+                preState.setObject(i + 1, objs[i]);
+            }
+            this.executeSuccessfully = true;
+            preState.executeUpdate();
+            try (ResultSet keyID = preState.getGeneratedKeys()) {
+                if (keyID.next()) {
+                    return keyID.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.executeSuccessfully = false;
+        }
+        return -1;
+    }
+
+    public boolean isExecuteSuccessfully() {
+        return this.executeSuccessfully;
     }
 
     public boolean isConnectedToFile() {
