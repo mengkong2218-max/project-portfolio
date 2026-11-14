@@ -3,6 +3,7 @@ package Users;
 public class User {
     private String userName;
     private String userGmail;
+    private double userBalance = 0.0;
     private int userID;
 
     public User() {}
@@ -17,7 +18,7 @@ public class User {
     }
 
     public void printUserData() {
-        System.out.println("| " + this.userID + " | " + this.userName + " | " + this.userGmail + " |");
+        System.out.println("| " + this.userID + " | " + this.userName + " | " + this.userGmail + " | " + this.userBalance + " |");
     }
 
     public int getUserID() {
@@ -29,6 +30,7 @@ public class User {
     public String getUserGmail() {
         return this.userGmail;
     }
+    public double getUserBalance() {return  this.userBalance;}
     public void setUserID(int id) {
         this.userID = id;
     }
@@ -38,4 +40,5 @@ public class User {
     public void setUserGmail(String gmail) {
         this.userGmail = gmail;
     }
+    public void setUserBalance(double userBalance) {this.userBalance = userBalance;}
 }

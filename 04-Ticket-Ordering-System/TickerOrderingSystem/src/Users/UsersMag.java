@@ -30,7 +30,7 @@ public class UsersMag {
             System.out.println("--- No User To Display ---");
             return;
         }
-        System.out.println("| ID | Name | Gmail |");
+        System.out.println("| ID | Name | Gmail | Balance |");
         for (User user : usersMag.values()) {
             user.printUserData();
         }
@@ -42,9 +42,9 @@ public class UsersMag {
             return;
         }
         String cmd = "INSERT INTO users (user_name, user_gmail) VALUES (?, ?);";
-        fileData.executeUpdateCommand(cmd, user.getName(), user.getUserGmail());
-        if (fileData.isExecuteSuccessfully()) {
-            lastAccID++;
+        int getID = fileData.executeInsert(cmd, user.getName(), user.getUserGmail());
+        if (getID != -1) {
+            lastAccID = getID;
             user.setUserID(lastAccID);
             usersMag.put(user.getUserGmail(), user);
         }

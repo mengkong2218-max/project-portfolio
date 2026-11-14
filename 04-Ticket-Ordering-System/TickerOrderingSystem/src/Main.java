@@ -1,13 +1,14 @@
 import Database.DataSQL;
-import Users.UsersMag;
+import Events.Event;
+import Events.EventsManager;
 
 public class Main {
     private static DataSQL myData = new DataSQL();
     public static void main(String[] args) {
-        UsersMag usersTable = new UsersMag(myData);
-        usersTable.printALLUsers();
-        System.out.println("\n");
-        usersTable.changeUsernameByEmail("mengkong2218@gmail.com", "Yeliang Gong");
-        usersTable.printALLUsers();
+        EventsManager eventsTable = new EventsManager(myData);
+        eventsTable.listAllEvent();
+
+        eventsTable.updateEvent("OCIC", "total_seats", 2022);
+        eventsTable.listAllEvent();
     }
 }

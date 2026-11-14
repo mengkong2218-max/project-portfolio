@@ -116,7 +116,9 @@ public class DataSQL {
                     event_name TEXT NOT NULL,
                     total_seats INTEGER DEFAULT 10,
                     available_seats INTEGER NOT NULL,
-                    price DOUBLE NOT NULL
+                    ticket_price DOUBLE NOT NULL,
+                    event_open_day TEXT NOT NULL,
+                    event_close_day TEXT NOT NULL
                 );
                 """;
 
