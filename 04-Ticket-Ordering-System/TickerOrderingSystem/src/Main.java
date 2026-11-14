@@ -8,7 +8,7 @@ public class Main {
         EventsManager eventsTable = new EventsManager(myData);
         eventsTable.listAllEvent();
 
-        eventsTable.updateEvent("OCIC", "total_seats", 2022);
+        eventsTable.updateEvent("OCIC", "ticket_price", 20);
         eventsTable.listAllEvent();
     }
 }

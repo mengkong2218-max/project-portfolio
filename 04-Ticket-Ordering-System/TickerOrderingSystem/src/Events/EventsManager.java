@@ -4,12 +4,14 @@ import Database.DataSQL;
 
 import java.sql.ResultSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.Map;
 
 public class EventsManager {
     private Map<String, Event> eventsMan = new LinkedHashMap<>();
     private DataSQL eventsData;
     private int lastEventId;
+    private static final Set<String> EVENT_COLUMN = Set.of("event_name", "total_seats", "available_seats", "ticket_price", "event_open_day", "event_close_day");
 
     public EventsManager(DataSQL eventsData) {
         this.eventsData = eventsData;
@@ -63,7 +65,7 @@ public class EventsManager {
             System.out.println("Sorry, This event is not exist.");
             return;
         }
-        if (!whatToUpdate.equals("event_name") && !whatToUpdate.equals("total_seats") && !whatToUpdate.equals("available_seats") && !whatToUpdate.equals("ticket_price") && !whatToUpdate.equals("event_open_day") && !whatToUpdate.equals("event_close_day")) {
+        if (!EVENT_COLUMN.contains(whatToUpdate)) {
             System.out.println("Sorry, We can not perform this action.");
             return;
         }
