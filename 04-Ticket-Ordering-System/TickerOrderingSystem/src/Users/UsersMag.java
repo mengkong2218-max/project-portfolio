@@ -7,8 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class UsersMag {
-    private Map<String, User> usersMag = new LinkedHashMap<>();
-    private DataSQL fileData;
+    private final Map<String, User> usersMag = new LinkedHashMap<>();
+    private final DataSQL fileData;
     private int lastAccID;
 
     public UsersMag(DataSQL data) {
@@ -18,7 +18,8 @@ public class UsersMag {
                 lastAccID = result.getInt("user_id");
                 String name = result.getString("user_name");
                 String gmail = result.getString("user_gmail");
-                usersMag.put(gmail, new User(lastAccID, name, gmail));
+                double balance = result.getDouble("user_balance");
+                usersMag.put(gmail, new User(lastAccID, name, gmail, balance));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,8 +56,9 @@ public class UsersMag {
             System.out.println("This acc is not exist.");
             return;
         }
-        String cmd = "DELETE FROM users WHERE user_gmail = ?;";
-        fileData.executeUpdateCommand(cmd, email);
+        int getID = usersMag.get(email).getUserID();
+        String cmd = "DELETE FROM users WHERE user_id = ?;";
+        fileData.executeUpdateCommand(cmd, getID);
         if (fileData.isExecuteSuccessfully()) {
             usersMag.remove(email);
         }
@@ -67,16 +69,25 @@ public class UsersMag {
             System.out.println("This acc is not exist.");
             return;
         }
-        String cmd = "UPDATE users SET user_name = ? WHERE user_gmail = ?";
-        fileData.executeUpdateCommand(cmd, username, email);
+        if (usersMag.get(email).getName().equals(username)) {
+            System.out.println("You Typed the Same USERNAME.");
+            return;
+        }
+        int user_id = usersMag.get(email).getUserID();
+        String cmd = "UPDATE users SET user_name = ? WHERE user_id = ?";
+        fileData.executeUpdateCommand(cmd, username, user_id);
         if (fileData.isExecuteSuccessfully()) {
             usersMag.get(email).setUserName(username);
             System.out.println("Update Username Successfully.");
         }
     }
 
-    private boolean checkAccountExistByEmail(String email) {
+    public boolean checkAccountExistByEmail(String email) {
         return usersMag.containsKey(email);
+    }
+
+    public User returnUserByEmail(String email) {
+        return usersMag.get(email);
     }
 
 }

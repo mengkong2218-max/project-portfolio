@@ -11,10 +11,15 @@ public class User {
         this.userName = userName;
         this.userGmail = userGmail;
     }
-    public User(int userID, String userName, String userGmail) {
+    public User(int userID, String userName, String userGmail, double userBalance) {
         this.userID = userID;
         this.userName = userName;
         this.userGmail = userGmail;
+        this.userBalance = userBalance;
+    }
+
+    public void printMyOrder(String eventName) {
+
     }
 
     public void printUserData() {

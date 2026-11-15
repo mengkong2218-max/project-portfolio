@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.Map;
 
 public class EventsManager {
-    private Map<String, Event> eventsMan = new LinkedHashMap<>();
-    private DataSQL eventsData;
+    private final Map<String, Event> eventsMan = new LinkedHashMap<>();
+    private final DataSQL eventsData;
     private int lastEventId;
     private static final Set<String> EVENT_COLUMN = Set.of("event_name", "total_seats", "available_seats", "ticket_price", "event_open_day", "event_close_day");
 
@@ -69,14 +69,32 @@ public class EventsManager {
             System.out.println("Sorry, We can not perform this action.");
             return;
         }
-        String task = "UPDATE event SET " + whatToUpdate + " = ? WHERE event_name = ?;";
-        eventsData.executeUpdateCommand(task, newValue, eventName);
+        int event_id = getIdFromEventName(eventName);
+        String task = "UPDATE event SET " + whatToUpdate + " = ? WHERE event_id = ?;";
+        eventsData.executeUpdateCommand(task, newValue, event_id);
         if (eventsData.isExecuteSuccessfully()) {
             eventsMan.get(eventName).setOneAnyFunctionOfEvent(whatToUpdate, newValue);
         }
     }
 
-    private boolean isEventExist(String evt) {
+    public void removeEvent(String eventName) {
+        if(!isEventExist(eventName)) {
+            System.out.println("Sorry! We don't have this event in our List.");
+            return;
+        }
+        int getID = getIdFromEventName(eventName);
+        String task = "DELETE FROM event WHERE event_id = ?;";
+        this.eventsData.executeUpdateCommand(task, getID);
+        if (this.eventsData.isExecuteSuccessfully()) {
+            this.eventsMan.remove(eventName);
+        }
+    }
+
+    private int getIdFromEventName(String eventName) {
+        return this.eventsMan.get(eventName).getEventId();
+    }
+
+    public boolean isEventExist(String evt) {
         return eventsMan.containsKey(evt);
     }
 }
