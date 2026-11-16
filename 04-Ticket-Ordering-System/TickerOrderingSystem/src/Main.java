@@ -11,9 +11,8 @@ public class Main {
         UsersMag userData = new UsersMag(myData);
         EventsManager eventData = new EventsManager(myData);
         Ordering order = new Ordering(myData, userData, eventData);
-        eventData.listAllEvent();
         User me = userData.returnUserByEmail("riyiusan@gmail.com");
 
-        order.userOrderTicket(me, "MPL", 10);
+        order.printAllUserOrdered(me);
     }
 }

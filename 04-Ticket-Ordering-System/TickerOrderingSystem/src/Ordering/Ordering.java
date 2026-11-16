@@ -72,13 +72,25 @@ public class Ordering {
             return;
         }
         int i = 1;
-        System.out.println("| No | Event Name | Ticket Price | Ticket Quantity | Full Paid |");
+        System.out.println("| No | Username | Event Name | Ticket Price | Ticket Quantity | Full Paid ($) |");
         for (Order order : orderList) {
             if (order.getUserId() == user.getUserID()) {
                 Event event = myEvent.getEventByEventID(order.getEventId());
                 double fullPrice = event.getTicketPrice() * order.getQuantity();
-                System.out.println("| " + i + " | " + event.getEventName()  +" | " + event.getTicketPrice() + " | " + order.getQuantity() + " | " + fullPrice + " |");
+                System.out.println("| " + i + " | " + user.getName() + " | " + event.getEventName()  +" | " + event.getTicketPrice() + " | " + order.getQuantity() + " | " + fullPrice + " |");
+                i++;
             }
+        }
+    }
+
+    public void userCancelOrderTicket(User user, String eventName) {
+        if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
+            System.out.println("Sorry, We can not perform this action.");
+            return;
+        }
+        if (!myEvent.isEventExist(eventName)) {
+            System.out.println("Sorry, We can not perform this action.");
+            return;
         }
     }
 

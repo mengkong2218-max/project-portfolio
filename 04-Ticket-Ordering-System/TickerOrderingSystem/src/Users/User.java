@@ -20,18 +20,6 @@ public class User {
         this.userBalance = userBalance;
     }
 
-    public void printMyOrder(Ordering ordering) {
-        ordering.printAllUserOrdered(this);
-    }
-
-    public void orderATicket(Ordering ordering, String eventName) {
-        this.orderManyTicket(ordering, eventName, 1);
-    }
-
-    public void orderManyTicket(Ordering ordering, String eventName, int quantity) {
-        ordering.userOrderTicket(this, eventName, quantity);
-    }
-
     public void printUserData() {
         System.out.println("| " + this.userID + " | " + this.userName + " | " + this.userGmail + " | " + this.userBalance + " |");
     }
