@@ -67,8 +67,8 @@ public class Event {
         return this.event_end_date;
     }
 
-    public boolean isSeatsAvailable() {
-        return available_seats <= 0;
+    public boolean isEnoughSeat(int seats) {
+        return (available_seats - seats) >= 0;
     }
 
     public int getEventId() {

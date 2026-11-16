@@ -1,5 +1,7 @@
 package Users;
 
+import Ordering.Ordering;
+
 public class User {
     private String userName;
     private String userGmail;
@@ -18,12 +20,24 @@ public class User {
         this.userBalance = userBalance;
     }
 
-    public void printMyOrder(String eventName) {
+    public void printMyOrder(Ordering ordering) {
+        ordering.printAllUserOrdered(this);
+    }
 
+    public void orderATicket(Ordering ordering, String eventName) {
+        this.orderManyTicket(ordering, eventName, 1);
+    }
+
+    public void orderManyTicket(Ordering ordering, String eventName, int quantity) {
+        ordering.userOrderTicket(this, eventName, quantity);
     }
 
     public void printUserData() {
         System.out.println("| " + this.userID + " | " + this.userName + " | " + this.userGmail + " | " + this.userBalance + " |");
+    }
+
+    public boolean haveEnoughBalance(double ticketPrice) {
+        return (this.userBalance - ticketPrice) >= 0.0;
     }
 
     public int getUserID() {

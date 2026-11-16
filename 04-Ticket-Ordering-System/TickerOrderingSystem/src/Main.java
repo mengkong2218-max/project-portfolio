@@ -10,24 +10,10 @@ public class Main {
     public static void main(String[] args) {
         UsersMag userData = new UsersMag(myData);
         EventsManager eventData = new EventsManager(myData);
-        Ordering order = new Ordering(myData);
+        Ordering order = new Ordering(myData, userData, eventData);
+        eventData.listAllEvent();
+        User me = userData.returnUserByEmail("riyiusan@gmail.com");
 
-        Event mpl = new Event();
-        mpl.setEventName("MPL");
-        mpl.setTotalSeats(100);
-        mpl.setAvailableSeats(50);
-        mpl.setTicketPrice(5);
-        mpl.setEventStartDate("16/11/2026");
-        mpl.setEventEndDate("20/11/2026");
-
-        eventData.addNewEvent(mpl);
-        order.displayListOfOrder();
-
-        User me = userData.returnUserByEmail("mengkong2218@gmail.com");
-        order.addNewOrder(me, mpl, 5);
-
-
-        order.displayListOfOrder();
-
+        order.userOrderTicket(me, "MPL", 10);
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class EventsManager {
     private final Map<String, Event> eventsMan = new LinkedHashMap<>();
+    private final Map<Integer, Event> eventsManById = new LinkedHashMap<>();
     private final DataSQL eventsData;
     private int lastEventId;
     private static final Set<String> EVENT_COLUMN = Set.of("event_name", "total_seats", "available_seats", "ticket_price", "event_open_day", "event_close_day");
@@ -24,7 +25,9 @@ public class EventsManager {
                 double price = result.getDouble("ticket_price");
                 String startDate = result.getString("event_open_day");
                 String endDate = result.getString("event_close_day");
-                eventsMan.put(name, new Event(lastEventId, name, totalSeat, availableSeat, price, startDate, endDate));
+                Event event = new Event(lastEventId, name, totalSeat, availableSeat, price, startDate, endDate);
+                eventsMan.put(name, event);
+                eventsManById.put(lastEventId, event);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,6 +60,7 @@ public class EventsManager {
             lastEventId = getId;
             event.setEventId(lastEventId);
             eventsMan.put(event.getEventName(), event);
+            eventsManById.put(lastEventId, event);
         }
     }
 
@@ -74,11 +78,12 @@ public class EventsManager {
         eventsData.executeUpdateCommand(task, newValue, event_id);
         if (eventsData.isExecuteSuccessfully()) {
             eventsMan.get(eventName).setOneAnyFunctionOfEvent(whatToUpdate, newValue);
+            eventsManById.get(event_id).setOneAnyFunctionOfEvent(whatToUpdate, newValue);
         }
     }
 
     public void removeEvent(String eventName) {
-        if(!isEventExist(eventName)) {
+        if (!isEventExist(eventName)) {
             System.out.println("Sorry! We don't have this event in our List.");
             return;
         }
@@ -87,6 +92,7 @@ public class EventsManager {
         this.eventsData.executeUpdateCommand(task, getID);
         if (this.eventsData.isExecuteSuccessfully()) {
             this.eventsMan.remove(eventName);
+            this.eventsManById.remove(getID);
         }
     }
 
@@ -96,5 +102,13 @@ public class EventsManager {
 
     public boolean isEventExist(String evt) {
         return eventsMan.containsKey(evt);
+    }
+
+    public Event getMyEventByEventName(String eventName) {
+        return this.eventsMan.get(eventName);
+    }
+
+    public Event getEventByEventID(int id) {
+        return this.eventsManById.get(id);
     }
 }

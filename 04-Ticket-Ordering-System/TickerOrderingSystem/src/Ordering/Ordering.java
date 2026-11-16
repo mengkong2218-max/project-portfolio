@@ -16,11 +16,11 @@ public class Ordering {
     private final UsersMag myUser;
     private final EventsManager myEvent;
 
-    public Ordering(DataSQL data) {
+    public Ordering(DataSQL data, UsersMag usersMag, EventsManager eventMan) {
         this.orderData = data;
         try (ResultSet rs = this.orderData.loadData("ordering_table")) {
             while (rs.next()) {
-                int order_id = rs.getInt("order_id");
+                int order_id = rs.getInt("ordering_id");
                 int user_id = rs.getInt("user_id");
                 int event_id = rs.getInt("event_id");
                 int quantity = rs.getInt("quantity");
@@ -30,8 +30,8 @@ public class Ordering {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.myUser = new UsersMag(data);
-        this.myEvent = new EventsManager(data);
+        this.myUser = usersMag;
+        this.myEvent = eventMan;
     }
 
     public void displayListOfOrder() {
@@ -43,24 +43,69 @@ public class Ordering {
         this.orderList.forEach(order -> order.printOrder());
     }
 
-    public void addNewOrder(User user, Event event, int ticketQuantity) {
+    public void userOrderTicket(User user, String eventName, int ticketQuantity) {
         if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
             System.out.println("User Not Found");
             return;
         }
-        if (!myEvent.isEventExist(event.getEventName())) {
+        if (!myEvent.isEventExist(eventName)) {
             System.out.println("No Event Was Found.");
             return;
         }
+        Event event = myEvent.getMyEventByEventName(eventName);
         String task = """
                 INSERT INTO ordering_table (user_id, event_id, quantity)
                 VALUES (?, ?, ?);
                 """;
         int orderID = orderData.executeInsert(task, user.getUserID(), event.getEventId(), ticketQuantity);
-        if (orderID != -1) {
+        double fullPrice = event.getTicketPrice() * ticketQuantity;
+        if (orderID != -1 && updateEventAvailableSeat(event, ticketQuantity) && updateUserBalance(user, fullPrice)) {
             String orderDate = getDateForAddingNewOrder(orderID);
             orderList.add(new Order(orderID, user.getUserID(), event.getEventId(), ticketQuantity, orderDate));
+            System.out.println("Successfully Order.");
         }
+    }
+
+    public void printAllUserOrdered(User user) {
+        if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
+            System.out.println("Sorry, We cannot find this user in Our System.");
+            return;
+        }
+        int i = 1;
+        System.out.println("| No | Event Name | Ticket Price | Ticket Quantity | Full Paid |");
+        for (Order order : orderList) {
+            if (order.getUserId() == user.getUserID()) {
+                Event event = myEvent.getEventByEventID(order.getEventId());
+                double fullPrice = event.getTicketPrice() * order.getQuantity();
+                System.out.println("| " + i + " | " + event.getEventName()  +" | " + event.getTicketPrice() + " | " + order.getQuantity() + " | " + fullPrice + " |");
+            }
+        }
+    }
+
+    private boolean updateEventAvailableSeat(Event event, int quantity) {
+        String task = """
+                UPDATE event SET available_seats = ? WHERE event_id = ?;
+                """;
+        int newAvailableSeat = event.getAvailableSeats() - quantity;
+        if (!event.isEnoughSeat(newAvailableSeat)) {
+            System.out.println("Not Enough Seats. We decided to cancel your order");
+            return false;
+        }
+        orderData.executeUpdateCommand(task, newAvailableSeat, event.getEventId());
+        return true;
+    }
+
+    private boolean updateUserBalance(User user, double calculatedPrice) {
+        String task = """
+                UPDATE users SET user_balance = ? WHERE user_id = ?;
+                """;
+        if (!user.haveEnoughBalance(calculatedPrice)) {
+            System.out.println("Sorry! You don't have money in your account.");
+            return false;
+        }
+        double newBalance = user.getUserBalance() - calculatedPrice;
+        orderData.executeUpdateCommand(task, newBalance, user.getUserID());
+        return true;
     }
 
     private String getDateForAddingNewOrder(int orderID) {
