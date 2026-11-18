@@ -13,6 +13,7 @@ public class Main {
         Ordering order = new Ordering(myData, userData, eventData);
         User me = userData.returnUserByEmail("riyiusan@gmail.com");
 
-        order.printAllUserOrdered(me);
+        order.userCancelOrderTicket(me, "MPL");
+
     }
 }

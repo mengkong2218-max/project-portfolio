@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class UsersMag {
     private final Map<String, User> usersMag = new LinkedHashMap<>();
+    private final Map<Integer, User> usersMagInt = new LinkedHashMap<>();
     private final DataSQL fileData;
     private int lastAccID;
 
@@ -19,7 +20,9 @@ public class UsersMag {
                 String name = result.getString("user_name");
                 String gmail = result.getString("user_gmail");
                 double balance = result.getDouble("user_balance");
-                usersMag.put(gmail, new User(lastAccID, name, gmail, balance));
+                User user = new User(lastAccID, name, gmail, balance);
+                usersMag.put(gmail, user);
+                usersMagInt.put(lastAccID, user);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,6 +51,7 @@ public class UsersMag {
             lastAccID = getID;
             user.setUserID(lastAccID);
             usersMag.put(user.getUserGmail(), user);
+            usersMagInt.put(user.getUserID(), user);
         }
     }
 
@@ -61,6 +65,7 @@ public class UsersMag {
         fileData.executeUpdateCommand(cmd, getID);
         if (fileData.isExecuteSuccessfully()) {
             usersMag.remove(email);
+            usersMagInt.remove(getID);
         }
     }
 
@@ -90,4 +95,7 @@ public class UsersMag {
         return usersMag.get(email);
     }
 
+    public User returnUserByInt(int id) {
+        return usersMagInt.get(id);
+    }
 }

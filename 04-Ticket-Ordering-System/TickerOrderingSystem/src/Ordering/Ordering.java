@@ -53,13 +53,24 @@ public class Ordering {
             return;
         }
         Event event = myEvent.getMyEventByEventName(eventName);
+        int newAvailableSeat = event.getAvailableSeats() - ticketQuantity;
+        if (!event.isEnoughSeat(newAvailableSeat)) {
+            System.out.println("Not Enough Seats. We decided to cancel your order");
+            return;
+        }
+        double fullPrice = event.getTicketPrice() * ticketQuantity;
+        if (!user.haveEnoughBalance(fullPrice)) {
+            System.out.println("Sorry! You don't have money in your account.");
+            return ;
+        }
         String task = """
                 INSERT INTO ordering_table (user_id, event_id, quantity)
                 VALUES (?, ?, ?);
                 """;
         int orderID = orderData.executeInsert(task, user.getUserID(), event.getEventId(), ticketQuantity);
-        double fullPrice = event.getTicketPrice() * ticketQuantity;
-        if (orderID != -1 && updateEventAvailableSeat(event, ticketQuantity) && updateUserBalance(user, fullPrice)) {
+        if (orderID != -1) {
+            updateEventAvailableSeat(event, newAvailableSeat);
+            updateUserBalance(user, fullPrice);
             String orderDate = getDateForAddingNewOrder(orderID);
             orderList.add(new Order(orderID, user.getUserID(), event.getEventId(), ticketQuantity, orderDate));
             System.out.println("Successfully Order.");
@@ -77,7 +88,7 @@ public class Ordering {
             if (order.getUserId() == user.getUserID()) {
                 Event event = myEvent.getEventByEventID(order.getEventId());
                 double fullPrice = event.getTicketPrice() * order.getQuantity();
-                System.out.println("| " + i + " | " + user.getName() + " | " + event.getEventName()  +" | " + event.getTicketPrice() + " | " + order.getQuantity() + " | " + fullPrice + " |");
+                System.out.println("| " + i + " | " + user.getName() + " | " + event.getEventName() + " | " + event.getTicketPrice() + " | " + order.getQuantity() + " | " + fullPrice + " |");
                 i++;
             }
         }
@@ -92,30 +103,39 @@ public class Ordering {
             System.out.println("Sorry, We can not perform this action.");
             return;
         }
+        Event event = this.myEvent.getMyEventByEventName(eventName);
+        String task = """
+                DELETE FROM ordering_table WHERE user_id = ? AND event_id = ?;
+                """;
+        this.orderData.executeUpdateCommand(task, user.getUserID(), event.getEventId());
+        if (this.orderData.isExecuteSuccessfully()) {
+            this.orderList.remove(findOrderIndexIdByUserIdAndEventId(user.getUserID(), event.getEventId()));
+        }
     }
 
-    private boolean updateEventAvailableSeat(Event event, int quantity) {
+    private int findOrderIndexIdByUserIdAndEventId(int userId, int eventId) {
+        int i = 0;
+        for (Order order : this.orderList) {
+            if (order.getUserId() == userId && order.getEventId() == eventId) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
+    private void updateEventAvailableSeat(Event event, int newAvailableSeat) {
         String task = """
                 UPDATE event SET available_seats = ? WHERE event_id = ?;
                 """;
-        int newAvailableSeat = event.getAvailableSeats() - quantity;
-        if (!event.isEnoughSeat(newAvailableSeat)) {
-            System.out.println("Not Enough Seats. We decided to cancel your order");
-            return false;
-        }
         orderData.executeUpdateCommand(task, newAvailableSeat, event.getEventId());
-        return true;
     }
 
-    private boolean updateUserBalance(User user, double calculatedPrice) {
+    private boolean updateUserBalance(User user, double newBalance) {
         String task = """
                 UPDATE users SET user_balance = ? WHERE user_id = ?;
                 """;
-        if (!user.haveEnoughBalance(calculatedPrice)) {
-            System.out.println("Sorry! You don't have money in your account.");
-            return false;
-        }
-        double newBalance = user.getUserBalance() - calculatedPrice;
+
         orderData.executeUpdateCommand(task, newBalance, user.getUserID());
         return true;
     }
