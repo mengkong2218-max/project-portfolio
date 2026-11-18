@@ -5,8 +5,10 @@ import Events.Event;
 import Events.EventsManager;
 import Users.UsersMag;
 import Users.User;
+import exceptions.*;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +29,8 @@ public class Ordering {
                 String order_date = rs.getString("order_date");
                 orderList.add(new Order(order_id, user_id, event_id, quantity, order_date));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("[ERROR]" + e.getMessage());
         }
         this.myUser = usersMag;
         this.myEvent = eventMan;
@@ -45,23 +47,19 @@ public class Ordering {
 
     public void userOrderTicket(User user, String eventName, int ticketQuantity) {
         if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
-            System.out.println("User Not Found");
-            return;
+            throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }
         if (!myEvent.isEventExist(eventName)) {
-            System.out.println("No Event Was Found.");
-            return;
+            throw new EventNotExistException("[Failed]: We can not find this event in our data.");
         }
         Event event = myEvent.getMyEventByEventName(eventName);
         int newAvailableSeat = event.getAvailableSeats() - ticketQuantity;
         if (!event.isEnoughSeat(newAvailableSeat)) {
-            System.out.println("Not Enough Seats. We decided to cancel your order");
-            return;
+            throw new NotEnoughSeatProblemException("Not Enough Seats. We decided to cancel your order");
         }
         double fullPrice = event.getTicketPrice() * ticketQuantity;
         if (!user.haveEnoughBalance(fullPrice)) {
-            System.out.println("Sorry! You don't have money in your account.");
-            return ;
+            throw new NotEnoughBalanceException("User balance is not enough to contribute in the event ");
         }
         String task = """
                 INSERT INTO ordering_table (user_id, event_id, quantity)
@@ -79,8 +77,7 @@ public class Ordering {
 
     public void printAllUserOrdered(User user) {
         if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
-            System.out.println("Sorry, We cannot find this user in Our System.");
-            return;
+            throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }
         int i = 1;
         System.out.println("| No | Username | Event Name | Ticket Price | Ticket Quantity | Full Paid ($) |");
@@ -96,12 +93,10 @@ public class Ordering {
 
     public void userCancelOrderTicket(User user, String eventName) {
         if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
-            System.out.println("Sorry, We can not perform this action.");
-            return;
+            throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }
         if (!myEvent.isEventExist(eventName)) {
-            System.out.println("Sorry, We can not perform this action.");
-            return;
+            throw new EventNotExistException("[Failed]: We can not find this event in our data.");
         }
         Event event = this.myEvent.getMyEventByEventName(eventName);
         String task = """
@@ -146,7 +141,7 @@ public class Ordering {
             if (result.next())
                 return result.getString("order_date");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("[ERROR]" + e.getMessage());
         }
         return "Not Found";
     }

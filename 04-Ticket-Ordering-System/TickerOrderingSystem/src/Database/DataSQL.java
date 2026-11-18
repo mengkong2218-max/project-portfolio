@@ -1,12 +1,16 @@
 package Database;
 
+import exceptions.UnableToLocateTableException;
+
 import java.sql.*;
+import java.util.Set;
 
 public class DataSQL {
     private static final String data = "jdbc:sqlite:Data/data.db";
     private boolean connectToFile = false;
     private Connection conn;
     private boolean executeSuccessfully;
+    private Set<String> dataTable = Set.of("event", "ordering_table", "users");
 
     private void createMainTable() throws SQLException {
         String userTable = this.createUserTable();
@@ -33,10 +37,9 @@ public class DataSQL {
     }
 
     public ResultSet loadData(String table) {
-        if (!table.equals("users") && !table.equals("event") && !table.equals("ordering_table")) {
-            System.out.println("No Database Found.");
+        if (!dataTable.contains(table)) {
             this.connectToFile = false;
-            return null;
+            throw new UnableToLocateTableException("[FATAL]: There is no table's name '"+ table + "' exist.");
         }
         String task = "SELECT * FROM " + table + ";";
         return this.executeQueryCommand(task);
@@ -135,6 +138,5 @@ public class DataSQL {
                     FOREIGN KEY (event_id) REFERENCES event(event_id)
                 );
                 """;
-
     }
 }

@@ -1,8 +1,12 @@
 package Events;
 
 import Database.DataSQL;
+import exceptions.DuplicateEventException;
+import exceptions.EventNotExistException;
+import exceptions.EventParticularColumnNotFound;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.Map;
@@ -29,7 +33,7 @@ public class EventsManager {
                 eventsMan.put(name, event);
                 eventsManById.put(lastEventId, event);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -47,8 +51,7 @@ public class EventsManager {
 
     public void addNewEvent(Event event) {
         if (isEventExist(event.getEventName())) {
-            System.out.println("Sorry, This event is already exist.");
-            return;
+            throw new DuplicateEventException("[Failed]: Event with name '" + event.getEventName()+ "' already exist.");
         }
         String cmd = """ 
                 INSERT INTO event 
@@ -56,22 +59,20 @@ public class EventsManager {
                 VALUES (?, ?, ?, ?, ?, ?);
                 """;
         int getId = eventsData.executeInsert(cmd, event.getEventName(), event.getTotalSeats(), event.getAvailableSeats(), event.getTicketPrice(), event.getEventStartDate(), event.getEventEndDate());
-        if (getId != -1) {
-            lastEventId = getId;
-            event.setEventId(lastEventId);
-            eventsMan.put(event.getEventName(), event);
-            eventsManById.put(lastEventId, event);
-        }
+        if (getId == -1)
+            throw new DuplicateEventException("[Failed]: Can not perform this action. This event might be already exist.");
+        lastEventId = getId;
+        event.setEventId(lastEventId);
+        eventsMan.put(event.getEventName(), event);
+        eventsManById.put(lastEventId, event);
     }
 
     public void updateEvent(String eventName, String whatToUpdate, Object newValue) {
         if (!isEventExist(eventName)) {
-            System.out.println("Sorry, This event is not exist.");
-            return;
+            throw new EventNotExistException("[Failed]: We can not find this event in our data.");
         }
         if (!EVENT_COLUMN.contains(whatToUpdate)) {
-            System.out.println("Sorry, We can not perform this action.");
-            return;
+            throw new EventParticularColumnNotFound("[Failed]: Column '" + whatToUpdate + "' does not exist in our system.");
         }
         int event_id = getIdFromEventName(eventName);
         String task = "UPDATE event SET " + whatToUpdate + " = ? WHERE event_id = ?;";
@@ -84,8 +85,7 @@ public class EventsManager {
 
     public void removeEvent(String eventName) {
         if (!isEventExist(eventName)) {
-            System.out.println("Sorry! We don't have this event in our List.");
-            return;
+            throw new EventNotExistException("[Failed]: We can not find this event in our data.");
         }
         int getID = getIdFromEventName(eventName);
         String task = "DELETE FROM event WHERE event_id = ?;";

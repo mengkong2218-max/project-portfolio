@@ -1,8 +1,11 @@
 package Users;
 
 import Database.DataSQL;
+import exceptions.EmailDuplicatedException;
+import exceptions.UserNotFoundException;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,7 +27,7 @@ public class UsersMag {
                 usersMag.put(gmail, user);
                 usersMagInt.put(lastAccID, user);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -42,8 +45,7 @@ public class UsersMag {
 
     public void addNewUser(User user) {
         if (checkAccountExistByEmail(user.getUserGmail())) {
-            System.out.println("Can not Continue this process.\nThis user is already exist.");
-            return;
+            throw new EmailDuplicatedException("[Failed]: Can not register on a gmail that is already exist:" + user.getUserGmail());
         }
         String cmd = "INSERT INTO users (user_name, user_gmail) VALUES (?, ?);";
         int getID = fileData.executeInsert(cmd, user.getName(), user.getUserGmail());
@@ -57,8 +59,7 @@ public class UsersMag {
 
     public void deleteUserByEmail(String email) {
         if (!checkAccountExistByEmail(email)) {
-            System.out.println("This acc is not exist.");
-            return;
+            throw new UserNotFoundException("[Failed]: Account with this email '" + email + "' was not found in System.");
         }
         int getID = usersMag.get(email).getUserID();
         String cmd = "DELETE FROM users WHERE user_id = ?;";
@@ -71,8 +72,7 @@ public class UsersMag {
 
     public void changeUsernameByEmail(String email, String username) {
         if (!checkAccountExistByEmail(email)) {
-            System.out.println("This acc is not exist.");
-            return;
+            throw new UserNotFoundException("[Failed]: Account with this email '" + email + "' was not found in System.");
         }
         if (usersMag.get(email).getName().equals(username)) {
             System.out.println("You Typed the Same USERNAME.");
