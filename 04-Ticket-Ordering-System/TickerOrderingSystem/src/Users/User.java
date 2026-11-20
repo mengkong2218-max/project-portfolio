@@ -20,6 +20,12 @@ public class User {
         this.userBalance = userBalance;
     }
 
+    public User(String userName, String userGmail, double userBalance) {
+        this.userName = userName;
+        this.userGmail = userGmail;
+        this.userBalance = userBalance;
+    }
+
     public void printUserData() {
         System.out.println("| " + this.userID + " | " + this.userName + " | " + this.userGmail + " | " + this.userBalance + " |");
     }

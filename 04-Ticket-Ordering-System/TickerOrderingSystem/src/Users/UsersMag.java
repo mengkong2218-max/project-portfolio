@@ -47,8 +47,8 @@ public class UsersMag {
         if (checkAccountExistByEmail(user.getUserGmail())) {
             throw new EmailDuplicatedException("[Failed]: Can not register on a gmail that is already exist:" + user.getUserGmail());
         }
-        String cmd = "INSERT INTO users (user_name, user_gmail) VALUES (?, ?);";
-        int getID = fileData.executeInsert(cmd, user.getName(), user.getUserGmail());
+        String cmd = "INSERT INTO users (user_name, user_gmail, user_balance) VALUES (?, ?, ?);";
+        int getID = fileData.executeInsert(cmd, user.getName(), user.getUserGmail(), user.getUserBalance());
         if (getID != -1) {
             lastAccID = getID;
             user.setUserID(lastAccID);

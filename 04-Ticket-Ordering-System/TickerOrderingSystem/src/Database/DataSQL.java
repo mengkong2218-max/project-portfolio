@@ -105,7 +105,8 @@ public class DataSQL {
                 CREATE TABLE IF NOT EXISTS users (
                     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_name TEXT NOT NULL,
-                    user_gmail TEXT NOT NULL
+                    user_gmail TEXT NOT NULL,
+                    user_balance DOUBLE DEFAULT (0.0)
                 );
                 """;
 

@@ -18,6 +18,8 @@ public class Ordering {
     private final UsersMag myUser;
     private final EventsManager myEvent;
 
+    private static final double REFUND_RATE = 0.90;
+
     public Ordering(DataSQL data, UsersMag usersMag, EventsManager eventMan) {
         this.orderData = data;
         try (ResultSet rs = this.orderData.loadData("ordering_table")) {
@@ -45,7 +47,7 @@ public class Ordering {
         this.orderList.forEach(order -> order.printOrder());
     }
 
-    public void userOrderTicket(User user, String eventName, int ticketQuantity) {
+    public synchronized void userOrderTicket(User user, String eventName, int ticketQuantity) {
         if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
             throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }
@@ -68,7 +70,7 @@ public class Ordering {
         int orderID = orderData.executeInsert(task, user.getUserID(), event.getEventId(), ticketQuantity);
         if (orderID != -1) {
             updateEventAvailableSeat(event, newAvailableSeat);
-            updateUserBalance(user, fullPrice);
+            updateUserBalance(user, user.getUserBalance() - fullPrice);
             String orderDate = getDateForAddingNewOrder(orderID);
             orderList.add(new Order(orderID, user.getUserID(), event.getEventId(), ticketQuantity, orderDate));
             System.out.println("Successfully Order.");
@@ -91,7 +93,7 @@ public class Ordering {
         }
     }
 
-    public void userCancelOrderTicket(User user, String eventName) {
+    public synchronized void userCancelOrderTicket(User user, String eventName) {
         if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
             throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }
@@ -99,12 +101,36 @@ public class Ordering {
             throw new EventNotExistException("[Failed]: We can not find this event in our data.");
         }
         Event event = this.myEvent.getMyEventByEventName(eventName);
+        int order_id = this.findOrderIndexIdByUserIdAndEventId(user.getUserID(), event.getEventId());
+        if (order_id == -1) {
+            throw new OrderIDNotExist("[Failed]: Can not locate unexisted id.");
+        }
+        Order getOrder = this.orderList.get(order_id);
+        int getSeatBack = event.getAvailableSeats() + getOrder.getQuantity();
+        double getMoneyBack = user.getUserBalance() + (event.getTicketPrice() * getOrder.getQuantity() * REFUND_RATE);
         String task = """
-                DELETE FROM ordering_table WHERE user_id = ? AND event_id = ?;
+                DELETE FROM ordering_table WHERE ordering_id = ?;
                 """;
-        this.orderData.executeUpdateCommand(task, user.getUserID(), event.getEventId());
+        this.orderData.executeUpdateCommand(task, getOrder.getOrderId());
         if (this.orderData.isExecuteSuccessfully()) {
-            this.orderList.remove(findOrderIndexIdByUserIdAndEventId(user.getUserID(), event.getEventId()));
+            this.updateUserBalance(user, getMoneyBack);
+            this.updateEventAvailableSeat(event, getSeatBack);
+            this.orderList.remove(order_id);
+        }
+    }
+
+    public void displayEventParticipation(Event event) {
+        if (!myEvent.isEventExist(event.getEventName()))
+            throw new EventNotExistException("[Failed]: We can not find this event in our data.");
+        int i = 1;
+        System.out.println("| No | Username | Event Ticket's Price | Ticket Quantity | Full Paid ($) | Order Date |");
+        for (Order order : this.orderList) {
+            if (order.getEventId() == event.getEventId()) {
+                String userName = this.myUser.returnUserByInt(order.getUserId()).getName();
+                double fullPrice = event.getTicketPrice() * order.getQuantity();
+                System.out.println("| " + i + " | " + userName + " | " + event.getTicketPrice() + "$ | " + order.getQuantity() + " | " + fullPrice + "$ | " + order.getOrderDate() + " |");
+            }
+            i++;
         }
     }
 
@@ -124,15 +150,20 @@ public class Ordering {
                 UPDATE event SET available_seats = ? WHERE event_id = ?;
                 """;
         orderData.executeUpdateCommand(task, newAvailableSeat, event.getEventId());
+        if (orderData.isExecuteSuccessfully()) {
+            event.setAvailableSeats(newAvailableSeat);
+        }
     }
 
-    private boolean updateUserBalance(User user, double newBalance) {
+    private void updateUserBalance(User user, double newBalance) {
         String task = """
                 UPDATE users SET user_balance = ? WHERE user_id = ?;
                 """;
 
         orderData.executeUpdateCommand(task, newBalance, user.getUserID());
-        return true;
+        if (orderData.isExecuteSuccessfully()) {
+            user.setUserBalance(newBalance);
+        }
     }
 
     private String getDateForAddingNewOrder(int orderID) {
