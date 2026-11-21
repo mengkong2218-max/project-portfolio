@@ -2,10 +2,12 @@ package Users;
 
 import Database.DataSQL;
 import exceptions.EmailDuplicatedException;
+import exceptions.NotEnoughBalanceException;
 import exceptions.UserNotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,6 +43,29 @@ public class UsersMag {
         for (User user : usersMag.values()) {
             user.printUserData();
         }
+    }
+
+    public Map<Integer, User> displayUsernameAsList() {
+        if (this.usersMag.isEmpty()) {
+            System.out.println("--- No User To Display ---");
+            return null;
+        }
+        int no = 1;
+        Map<Integer, User> userList = new HashMap<>();
+        for (User user : usersMag.values()) {
+            userList.put(no, user);
+            String nameOrder = "|  " + no + ". ";
+            String name = user.getName();
+            String fullSpace = "|=================================|";
+            int spaceLeft = fullSpace.length() - (name.length() + nameOrder.length());
+            System.out.print(nameOrder + name);
+            for (int i = 0; i < spaceLeft; i++) {
+                if (i == (spaceLeft - 1)) System.out.print("|");
+                else System.out.print(" ");
+            }
+            no++;
+        }
+        return userList;
     }
 
     public void addNewUser(User user) {
@@ -84,6 +109,22 @@ public class UsersMag {
         if (fileData.isExecuteSuccessfully()) {
             usersMag.get(email).setUserName(username);
             System.out.println("Update Username Successfully.");
+        }
+    }
+
+    public void depositBalanceToUser(User user,double amount) {
+        if (!checkAccountExistByEmail(user.getUserGmail()))
+            throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
+        if (amount <= 0)
+            throw new NotEnoughBalanceException("[Failed]: Not Enough Amount to process deposit.");
+        double newBalance = user.getUserBalance() + amount;
+        String task = """
+                UPDATE users SET user_balance = ? WHERE user_id = ?;
+                """;
+        fileData.executeUpdateCommand(task, newBalance, user.getUserID());
+        if (!fileData.isExecuteSuccessfully()) {
+            user.setUserBalance(newBalance);
+            System.out.println("[Deposit]: Successfully");
         }
     }
 
