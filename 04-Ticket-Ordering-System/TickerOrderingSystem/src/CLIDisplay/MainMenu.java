@@ -22,7 +22,7 @@ public class MainMenu {
                     UserMenuPage.userMode();
                     break;
                 case 2:
-                    System.out.println("Event");
+                    EventMenuPage.eventMode();
                     break;
                 case 3:
                     System.out.println("Order");

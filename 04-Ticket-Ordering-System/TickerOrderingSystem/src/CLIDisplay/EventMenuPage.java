@@ -1,5 +1,6 @@
 package CLIDisplay;
 
+import CLIDisplay.EventPage.EventPage;
 import Events.Event;
 import Validation.Validation;
 
@@ -7,20 +8,24 @@ import java.util.Map;
 
 public class EventMenuPage {
     public static void eventMode() {
-        Map<Integer, Event> eventList = eventMenu();
-        taskToDo();
-        int option = Validation.getPositiveIntInput("> Enter Option: ");
-        switch (option) {
-            case 1:
-                System.out.println("Check Event ");
-                break;
-            case 2:
-                addNewEvent();
-                break;
-            case 3:
-                return;
-            default:
-                System.out.println("[Invalid]: Option '"+ option + "' not Found.");
+        while (true) {
+            Map<Integer, Event> eventList = eventMenu();
+            taskToDo();
+            int option = Validation.getPositiveIntInput("> Enter Option: ");
+            switch (option) {
+                case 1:
+                    Event event = selectEventFrom(eventList);
+                    if (event != null)
+                        EventPage.renderEvent(event);
+                    break;
+                case 2:
+                    addNewEvent();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("[Invalid]: Option '" + option + "' not Found.");
+            }
         }
     }
 
@@ -41,12 +46,19 @@ public class EventMenuPage {
                 """);
     }
 
+    private static Event selectEventFrom(Map<Integer, Event> eventList) {
+        int getIndex = Validation.getPositiveIntInput("Enter Event No: ");
+        if (getIndex >= 1 && getIndex <= eventList.size()) return eventList.get(getIndex);
+        return null;
+    }
+
     private static void addNewEvent() {
         Validation.clearInputBufferBeforeStringInput();
         String eventName = Validation.stringInput("Enter Event Name: ");
         int total_seats = Validation.getPositiveIntInput("Enter Event Total Seat: ");
         int available_seats = Validation.getPositiveIntInput("Enter Event Available Seat: ");
         double ticket_price = Validation.getPositiveDoubleInput("Enter Event Ticket Price: ");
+        Validation.clearInputBufferBeforeStringInput();
         String opening_date = Validation.stringInput("Enter Event Open Date: ");
         String close_date = Validation.stringInput("Enter Event Close Date: ");
         Event newEvent = new Event();

@@ -16,7 +16,8 @@ public class UserMenuPage {
             switch (taskNum) {
                 case 1:
                     User user = selectUserFrom(userList);
-                    UserPage.renderUser(user);
+                    if (user != null)
+                        UserPage.renderUser(user);
                     break;
                 case 2:
                     createNewUser();
@@ -47,7 +48,8 @@ public class UserMenuPage {
 
     private static User selectUserFrom(Map<Integer, User> userList) {
         int getIndex = Validation.getPositiveIntInput("Enter User No: ");
-        return userList.get(getIndex);
+        if (getIndex >= 1 && getIndex <= userList.size() - 1) return userList.get(getIndex);
+        return null;
     }
 
     private static void createNewUser() {

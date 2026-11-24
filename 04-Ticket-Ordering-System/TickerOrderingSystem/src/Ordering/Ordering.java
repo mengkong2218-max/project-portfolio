@@ -7,6 +7,7 @@ import Users.UsersMag;
 import Users.User;
 import exceptions.*;
 
+import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -126,7 +127,11 @@ public class Ordering {
         System.out.println("| No | Username | Event Ticket's Price | Ticket Quantity | Full Paid ($) | Order Date |");
         for (Order order : this.orderList) {
             if (order.getEventId() == event.getEventId()) {
-                String userName = this.myUser.returnUserByInt(order.getUserId()).getName();
+                User user = this.myUser.returnUserByInt(order.getUserId());
+                if (user == null) {
+                    throw new UserNotFoundException("[Failed]: Can not find this user");
+                }
+                String userName = user.getName();
                 double fullPrice = event.getTicketPrice() * order.getQuantity();
                 System.out.println("| " + i + " | " + userName + " | " + event.getTicketPrice() + "$ | " + order.getQuantity() + " | " + fullPrice + "$ | " + order.getOrderDate() + " |");
             }
