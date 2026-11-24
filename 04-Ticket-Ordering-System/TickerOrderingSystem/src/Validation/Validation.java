@@ -1,9 +1,11 @@
 package Validation;
 
 import java.util.Scanner;
+import java.util.Set;
 
 public class Validation {
 
+    public static final Set<String> setOfYes = Set.of("y", "yes");
     private static final Scanner input = new Scanner(System.in);
 
     public static int getPositiveIntInput(String prompt) {
@@ -30,5 +32,13 @@ public class Validation {
             input.next();
             System.out.println("[Invalid]: Not a valid Input. Try Again.");
         }
+    }
+
+    public static void clearInputBufferBeforeStringInput() {
+        input.nextLine();
+    }
+    public static String stringInput(String prompt) {
+        System.out.print(prompt);
+        return input.nextLine();
     }
 }

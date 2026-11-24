@@ -47,14 +47,14 @@ public class Ordering {
         this.orderList.forEach(order -> order.printOrder());
     }
 
-    public synchronized void userOrderTicket(User user, String eventName, int ticketQuantity) {
+    public void userOrderTicket(User user, int eventId, int ticketQuantity) {
         if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
             throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }
-        if (!myEvent.isEventExist(eventName)) {
+        if (!myEvent.isEventExist(eventId)) {
             throw new EventNotExistException("[Failed]: We can not find this event in our data.");
         }
-        Event event = myEvent.getMyEventByEventName(eventName);
+        Event event = myEvent.getEventByEventID(eventId);
         int newAvailableSeat = event.getAvailableSeats() - ticketQuantity;
         if (!event.isEnoughSeat(newAvailableSeat)) {
             throw new NotEnoughSeatProblemException("Not Enough Seats. We decided to cancel your order");
@@ -93,7 +93,7 @@ public class Ordering {
         }
     }
 
-    public synchronized void userCancelOrderTicket(User user, String eventName) {
+    public void userCancelOrderTicket(User user, String eventName) {
         if (!myUser.checkAccountExistByEmail(user.getUserGmail())) {
             throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }

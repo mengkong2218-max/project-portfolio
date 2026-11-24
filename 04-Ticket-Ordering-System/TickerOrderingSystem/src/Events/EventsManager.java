@@ -5,8 +5,10 @@ import exceptions.DuplicateEventException;
 import exceptions.EventNotExistException;
 import exceptions.EventParticularColumnNotFound;
 
+import javax.swing.tree.ExpandVetoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.Map;
@@ -49,9 +51,24 @@ public class EventsManager {
         }
     }
 
+    public Map<Integer, Event> printEventAsListOfName() {
+        if (this.eventsMan.isEmpty()) {
+            System.out.println(" --- No Event Available here --- ");
+            return null;
+        }
+        Map<Integer, Event> eventIndex = new HashMap<>();
+        int i = 1;
+        for (Event event : eventsMan.values()) {
+            System.out.println("       " + i + ". " + event.getEventName());
+            eventIndex.put(i, event);
+            i++;
+        }
+        return eventIndex;
+    }
+
     public void addNewEvent(Event event) {
         if (isEventExist(event.getEventName())) {
-            throw new DuplicateEventException("[Failed]: Event with name '" + event.getEventName()+ "' already exist.");
+            throw new DuplicateEventException("[Failed]: Event with name '" + event.getEventName() + "' already exist.");
         }
         String cmd = """ 
                 INSERT INTO event 
@@ -102,6 +119,10 @@ public class EventsManager {
 
     public boolean isEventExist(String evt) {
         return eventsMan.containsKey(evt);
+    }
+
+    public boolean isEventExist(int eventID) {
+        return eventsManById.containsKey(eventID);
     }
 
     public Event getMyEventByEventName(String eventName) {

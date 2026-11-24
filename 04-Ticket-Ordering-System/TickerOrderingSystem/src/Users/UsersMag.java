@@ -60,7 +60,7 @@ public class UsersMag {
             int spaceLeft = fullSpace.length() - (name.length() + nameOrder.length());
             System.out.print(nameOrder + name);
             for (int i = 0; i < spaceLeft; i++) {
-                if (i == (spaceLeft - 1)) System.out.print("|");
+                if (i == (spaceLeft - 1)) System.out.print("|\n");
                 else System.out.print(" ");
             }
             no++;
@@ -79,35 +79,37 @@ public class UsersMag {
             user.setUserID(lastAccID);
             usersMag.put(user.getUserGmail(), user);
             usersMagInt.put(user.getUserID(), user);
+            System.out.println("[Successfully]: New User Added.");
         }
     }
 
-    public void deleteUserByEmail(String email) {
-        if (!checkAccountExistByEmail(email)) {
-            throw new UserNotFoundException("[Failed]: Account with this email '" + email + "' was not found in System.");
+    public void deleteUser(User user) {
+        if (!checkAccountExistByEmail(user.getUserGmail())) {
+            throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }
-        int getID = usersMag.get(email).getUserID();
+        int getID = user.getUserID();
         String cmd = "DELETE FROM users WHERE user_id = ?;";
         fileData.executeUpdateCommand(cmd, getID);
         if (fileData.isExecuteSuccessfully()) {
-            usersMag.remove(email);
+            usersMag.remove(user.getUserGmail());
             usersMagInt.remove(getID);
+            System.out.println("[Successfully]: This user is already deleted.");
         }
     }
 
-    public void changeUsernameByEmail(String email, String username) {
-        if (!checkAccountExistByEmail(email)) {
-            throw new UserNotFoundException("[Failed]: Account with this email '" + email + "' was not found in System.");
+    public void changeUsername(User user, String newUsername) {
+        if (!checkAccountExistByEmail(user.getUserGmail())) {
+            throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
         }
-        if (usersMag.get(email).getName().equals(username)) {
+        if (user.getName().equals(newUsername)) {
             System.out.println("You Typed the Same USERNAME.");
             return;
         }
-        int user_id = usersMag.get(email).getUserID();
+        int user_id = user.getUserID();
         String cmd = "UPDATE users SET user_name = ? WHERE user_id = ?";
-        fileData.executeUpdateCommand(cmd, username, user_id);
+        fileData.executeUpdateCommand(cmd, newUsername, user_id);
         if (fileData.isExecuteSuccessfully()) {
-            usersMag.get(email).setUserName(username);
+            user.setUserName(newUsername);
             System.out.println("Update Username Successfully.");
         }
     }
@@ -118,13 +120,26 @@ public class UsersMag {
         if (amount <= 0)
             throw new NotEnoughBalanceException("[Failed]: Not Enough Amount to process deposit.");
         double newBalance = user.getUserBalance() + amount;
+        transactionBalance(user, newBalance, "Deposit");
+    }
+
+    public void withdrawBalanceFromUser(User user, double amount) {
+        if (!checkAccountExistByEmail(user.getUserGmail()))
+            throw new UserNotFoundException("[Failed]: Account with this email '" + user.getUserGmail() + "' was not found in System.");
+        if (amount <= 0 || user.getUserBalance() <= amount)
+            throw new NotEnoughBalanceException("[Failed]: Not Enough Amount to process Withdraw.");
+        double newBalance = user.getUserBalance() - amount;
+        transactionBalance(user, newBalance, "Withdraw");
+    }
+
+    private void transactionBalance(User user, double newBalance, String taskPerform) {
         String task = """
                 UPDATE users SET user_balance = ? WHERE user_id = ?;
                 """;
         fileData.executeUpdateCommand(task, newBalance, user.getUserID());
-        if (!fileData.isExecuteSuccessfully()) {
+        if (fileData.isExecuteSuccessfully()) {
             user.setUserBalance(newBalance);
-            System.out.println("[Deposit]: Successfully");
+            System.out.println("[" + taskPerform + "]: Successfully");
         }
     }
 

@@ -19,7 +19,7 @@ public class MainMenu {
 
             switch (option) {
                 case 1:
-                    System.out.println("User");
+                    UserMenuPage.userMode();
                     break;
                 case 2:
                     System.out.println("Event");

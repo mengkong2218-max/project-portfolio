@@ -18,6 +18,14 @@ public class UserMenuPage {
                     User user = selectUserFrom(userList);
                     UserPage.renderUser(user);
                     break;
+                case 2:
+                    createNewUser();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("This activity is not valid at all.");
+
             }
         }
     }
@@ -40,5 +48,17 @@ public class UserMenuPage {
     private static User selectUserFrom(Map<Integer, User> userList) {
         int getIndex = Validation.getPositiveIntInput("Enter User No: ");
         return userList.get(getIndex);
+    }
+
+    private static void createNewUser() {
+        Validation.clearInputBufferBeforeStringInput();
+        String name = Validation.stringInput("Enter Your Name: ");
+        String gmail = Validation.stringInput("Enter Your Email: ");
+        double balance = Validation.getPositiveDoubleInput("Enter Your Balance: ");
+        User user = new User();
+        user.setUserName(name);
+        user.setUserBalance(balance);
+        user.setUserGmail(gmail);
+        MainMenu.controlUser.addNewUser(user);
     }
 }
