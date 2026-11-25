@@ -46,12 +46,12 @@ public class UsersMag {
     }
 
     public Map<Integer, User> displayUsernameAsList() {
-        if (this.usersMag.isEmpty()) {
-            System.out.println("--- No User To Display ---");
-            return null;
-        }
         int no = 1;
         Map<Integer, User> userList = new HashMap<>();
+        if (this.usersMag.isEmpty()) {
+            System.out.println("Sorry!!! There is not a single user available here.");
+            return userList;
+        }
         for (User user : usersMag.values()) {
             userList.put(no, user);
             String nameOrder = "|  " + no + ". ";

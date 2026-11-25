@@ -52,11 +52,11 @@ public class EventsManager {
     }
 
     public Map<Integer, Event> printEventAsListOfName() {
-        if (this.eventsMan.isEmpty()) {
-            System.out.println(" --- No Event Available here --- ");
-            return null;
-        }
         Map<Integer, Event> eventIndex = new HashMap<>();
+        if (this.eventsMan.isEmpty()) {
+            System.out.println("Sorry!!! We don't have any events yet.");
+            return eventIndex;
+        }
         int i = 1;
         for (Event event : eventsMan.values()) {
             System.out.println("       " + i + ". " + event.getEventName());

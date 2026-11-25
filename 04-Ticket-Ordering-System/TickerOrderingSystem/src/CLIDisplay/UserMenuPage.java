@@ -3,6 +3,7 @@ package CLIDisplay;
 import CLIDisplay.UserPage.UserPage;
 import Users.User;
 import Validation.Validation;
+import exceptions.AppException;
 
 import java.util.Map;
 
@@ -47,8 +48,11 @@ public class UserMenuPage {
     }
 
     private static User selectUserFrom(Map<Integer, User> userList) {
+        if (userList.isEmpty()) {
+            return null;
+        }
         int getIndex = Validation.getPositiveIntInput("Enter User No: ");
-        if (getIndex >= 1 && getIndex <= userList.size() - 1) return userList.get(getIndex);
+        if (userList.containsKey(getIndex)) return userList.get(getIndex);
         return null;
     }
 
@@ -61,6 +65,10 @@ public class UserMenuPage {
         user.setUserName(name);
         user.setUserBalance(balance);
         user.setUserGmail(gmail);
-        MainMenu.controlUser.addNewUser(user);
+        try {
+            MainMenu.controlUser.addNewUser(user);
+        } catch (AppException e) {
+            System.out.println(e);
+        }
     }
 }

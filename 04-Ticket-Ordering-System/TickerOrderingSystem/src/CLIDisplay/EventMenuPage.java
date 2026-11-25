@@ -3,6 +3,7 @@ package CLIDisplay;
 import CLIDisplay.EventPage.EventPage;
 import Events.Event;
 import Validation.Validation;
+import exceptions.AppException;
 
 import java.util.Map;
 
@@ -47,8 +48,11 @@ public class EventMenuPage {
     }
 
     private static Event selectEventFrom(Map<Integer, Event> eventList) {
+        if (eventList.isEmpty()) {
+            return null;
+        }
         int getIndex = Validation.getPositiveIntInput("Enter Event No: ");
-        if (getIndex >= 1 && getIndex <= eventList.size()) return eventList.get(getIndex);
+        if (eventList.containsKey(getIndex)) return eventList.get(getIndex);
         return null;
     }
 
@@ -68,6 +72,10 @@ public class EventMenuPage {
         newEvent.setTicketPrice(ticket_price);
         newEvent.setEventStartDate(opening_date);
         newEvent.setEventEndDate(close_date);
-        MainMenu.controlEvent.addNewEvent(newEvent);
+        try {
+            MainMenu.controlEvent.addNewEvent(newEvent);
+        } catch (AppException e) {
+            System.out.println(e);
+        }
     }
 }

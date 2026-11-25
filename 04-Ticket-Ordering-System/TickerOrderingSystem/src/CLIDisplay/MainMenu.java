@@ -25,7 +25,7 @@ public class MainMenu {
                     EventMenuPage.eventMode();
                     break;
                 case 3:
-                    System.out.println("Order");
+                    OrderPage.displayOrderList();
                     break;
                 case 4:
                     System.out.println("Thank You!!!");

@@ -4,6 +4,7 @@ import CLIDisplay.MainMenu;
 import Events.Event;
 import Users.User;
 import Validation.Validation;
+import exceptions.AppException;
 import exceptions.UserNotFoundException;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class EventPage {
                     eventDetail(event);
                     break;
                 case 6:
-                    deleteEvent(event);
+                    if (deleteEvent(event)) return;
                     break;
                 case 7:
                     return;
@@ -74,10 +75,14 @@ public class EventPage {
         Validation.clearInputBufferBeforeStringInput();
         String userEmail = Validation.stringInput("Enter User's Email: ");
         int userTicket = Validation.getPositiveIntInput("Enter User's Ticket: ");
+        User user = MainMenu.controlUser.returnUserByEmail(userEmail);
+        if (user == null) {
+            System.out.println("[Failed]: No user with this email: " + userEmail);
+            return;
+        }
         try {
-            User user = MainMenu.controlUser.returnUserByEmail(userEmail);
             MainMenu.controlOrder.userOrderTicket(user, event.getEventId(), userTicket);
-        } catch (RuntimeException e) {
+        } catch (AppException e) {
             System.out.println(e);
         }
     }
@@ -85,10 +90,14 @@ public class EventPage {
     private static void cancelMember(Event event) {
         Validation.clearInputBufferBeforeStringInput();
         String userEmail = Validation.stringInput("Enter User's Email: ");
+        User user = MainMenu.controlUser.returnUserByEmail(userEmail);
+        if (user == null) {
+            System.out.println("[Failed]: No user with this email: " + userEmail);
+            return;
+        }
         try {
-            User user = MainMenu.controlUser.returnUserByEmail(userEmail);
             MainMenu.controlOrder.userCancelOrderTicket(user, event.getEventName());
-        } catch (RuntimeException e) {
+        } catch (AppException e) {
             System.out.println(e);
         }
     }
@@ -107,7 +116,7 @@ public class EventPage {
                 MainMenu.controlEvent.removeEvent(event.getEventName());
                 return true;
             }
-        } catch (RuntimeException e) {
+        } catch (AppException e) {
             System.out.println(e);
         }
         return false;
@@ -161,7 +170,7 @@ public class EventPage {
                 default:
                     System.out.println("[Invalid]: Not an available Option.");
             }
-        } catch (RuntimeException e) {
+        } catch (AppException e) {
             System.out.println(e);
         }
     }
