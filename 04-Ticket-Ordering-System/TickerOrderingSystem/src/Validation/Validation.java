@@ -10,33 +10,30 @@ public class Validation {
 
     public static int getPositiveIntInput(String prompt) {
         while (true) {
-            System.out.print(prompt);
-            if (input.hasNextInt()) {
-                int value = input.nextInt();
-                if (value >= 0)
-                    return value;
+            String numInput = stringInput(prompt).trim();
+            try {
+                int value = Integer.parseInt(numInput);
+                if (value >= 0) return value;
+                System.out.println("[Invalid]: Not a valid Input. Try Again.");
+            } catch (NumberFormatException e) {
+                System.out.println(e);
             }
-            input.next();
-            System.out.println("[Invalid]: Not a valid Input. Try Again.");
         }
     }
 
     public static double getPositiveDoubleInput(String prompt) {
         while (true) {
-            System.out.print(prompt);
-            if (input.hasNextDouble()) {
-                double value = input.nextDouble();
-                if (value >= 0.0)
-                    return value;
+            String numInput = stringInput(prompt).trim();
+            try {
+                double value = Double.parseDouble(numInput);
+                if (value >= 0) return value;
+                System.out.println("[Invalid]: Not a valid Input. Try Again.");
+            } catch (NumberFormatException e) {
+                System.out.println(e);
             }
-            input.next();
-            System.out.println("[Invalid]: Not a valid Input. Try Again.");
         }
     }
 
-    public static void clearInputBufferBeforeStringInput() {
-        input.nextLine();
-    }
     public static String stringInput(String prompt) {
         System.out.print(prompt);
         return input.nextLine();

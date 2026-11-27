@@ -31,7 +31,7 @@ public class EventPage {
                     try {
                         MainMenu.controlOrder.displayEventParticipation(event);
                     } catch (UserNotFoundException e) {
-                        System.out.println(e);
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case 2:
@@ -72,7 +72,6 @@ public class EventPage {
     }
 
     private static void addMember(Event event) {
-        Validation.clearInputBufferBeforeStringInput();
         String userEmail = Validation.stringInput("Enter User's Email: ");
         int userTicket = Validation.getPositiveIntInput("Enter User's Ticket: ");
         User user = MainMenu.controlUser.returnUserByEmail(userEmail);
@@ -83,12 +82,11 @@ public class EventPage {
         try {
             MainMenu.controlOrder.userOrderTicket(user, event.getEventId(), userTicket);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     private static void cancelMember(Event event) {
-        Validation.clearInputBufferBeforeStringInput();
         String userEmail = Validation.stringInput("Enter User's Email: ");
         User user = MainMenu.controlUser.returnUserByEmail(userEmail);
         if (user == null) {
@@ -98,7 +96,7 @@ public class EventPage {
         try {
             MainMenu.controlOrder.userCancelOrderTicket(user, event.getEventName());
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -108,16 +106,14 @@ public class EventPage {
 
     private static boolean deleteEvent(Event event) {
         System.out.println("Are You Sure: You wanted to delete this event?");
-        System.out.print(" (y/n) ==> ");
-        Validation.clearInputBufferBeforeStringInput();
-        String ans = Validation.stringInput("");
+        String ans = Validation.stringInput(" (y/n) ==> ");
         try {
             if (Validation.setOfYes.contains(ans.toLowerCase())) {
                 MainMenu.controlEvent.removeEvent(event.getEventName());
                 return true;
             }
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
         return false;
     }
@@ -139,7 +135,6 @@ public class EventPage {
 
             switch (option) {
                 case 1:
-                    Validation.clearInputBufferBeforeStringInput();
                     String newEventName = Validation.stringInput("Enter New Event Name: ");
                     MainMenu.controlEvent.updateEvent(event.getEventName(), eventSpecifications.get(1), newEventName);
                     break;
@@ -156,12 +151,10 @@ public class EventPage {
                     MainMenu.controlEvent.updateEvent(event.getEventName(), eventSpecifications.get(4), newTicketPrice);
                     break;
                 case 5:
-                    Validation.clearInputBufferBeforeStringInput();
                     String newOpeningDay = Validation.stringInput("Enter New Opening Day: ");
                     MainMenu.controlEvent.updateEvent(event.getEventName(), eventSpecifications.get(5), newOpeningDay);
                     break;
                 case 6:
-                    Validation.clearInputBufferBeforeStringInput();
                     String newClosingDay = Validation.stringInput("Enter New Closing Day: ");
                     MainMenu.controlEvent.updateEvent(event.getEventName(), eventSpecifications.get(6), newClosingDay);
                     break;
@@ -171,7 +164,7 @@ public class EventPage {
                     System.out.println("[Invalid]: Not an available Option.");
             }
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 

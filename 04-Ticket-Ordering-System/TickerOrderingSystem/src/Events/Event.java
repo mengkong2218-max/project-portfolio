@@ -1,7 +1,5 @@
 package Events;
 
-import java.lang.classfile.instruction.SwitchCase;
-
 public class Event {
     private int event_id;
     private String event_name;
@@ -68,7 +66,7 @@ public class Event {
     }
 
     public boolean isEnoughSeat(int seats) {
-        return (available_seats - seats) >= 0;
+        return available_seats >= seats;
     }
 
     public int getEventId() {

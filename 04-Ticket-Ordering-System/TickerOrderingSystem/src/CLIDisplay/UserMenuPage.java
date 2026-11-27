@@ -57,7 +57,6 @@ public class UserMenuPage {
     }
 
     private static void createNewUser() {
-        Validation.clearInputBufferBeforeStringInput();
         String name = Validation.stringInput("Enter Your Name: ");
         String gmail = Validation.stringInput("Enter Your Email: ");
         double balance = Validation.getPositiveDoubleInput("Enter Your Balance: ");
@@ -68,7 +67,7 @@ public class UserMenuPage {
         try {
             MainMenu.controlUser.addNewUser(user);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 }

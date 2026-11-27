@@ -34,17 +34,6 @@ public class UsersMag {
         }
     }
 
-    public void printALLUsers() {
-        if (this.usersMag.isEmpty()) {
-            System.out.println("--- No User To Display ---");
-            return;
-        }
-        System.out.println("| ID | Name | Gmail | Balance |");
-        for (User user : usersMag.values()) {
-            user.printUserData();
-        }
-    }
-
     public Map<Integer, User> displayUsernameAsList() {
         int no = 1;
         Map<Integer, User> userList = new HashMap<>();

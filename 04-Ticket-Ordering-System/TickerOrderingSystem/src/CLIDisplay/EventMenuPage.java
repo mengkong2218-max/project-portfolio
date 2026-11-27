@@ -57,12 +57,10 @@ public class EventMenuPage {
     }
 
     private static void addNewEvent() {
-        Validation.clearInputBufferBeforeStringInput();
         String eventName = Validation.stringInput("Enter Event Name: ");
         int total_seats = Validation.getPositiveIntInput("Enter Event Total Seat: ");
         int available_seats = Validation.getPositiveIntInput("Enter Event Available Seat: ");
         double ticket_price = Validation.getPositiveDoubleInput("Enter Event Ticket Price: ");
-        Validation.clearInputBufferBeforeStringInput();
         String opening_date = Validation.stringInput("Enter Event Open Date: ");
         String close_date = Validation.stringInput("Enter Event Close Date: ");
         Event newEvent = new Event();
@@ -75,7 +73,7 @@ public class EventMenuPage {
         try {
             MainMenu.controlEvent.addNewEvent(newEvent);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 }

@@ -5,7 +5,6 @@ import exceptions.DuplicateEventException;
 import exceptions.EventNotExistException;
 import exceptions.EventParticularColumnNotFound;
 
-import javax.swing.tree.ExpandVetoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;

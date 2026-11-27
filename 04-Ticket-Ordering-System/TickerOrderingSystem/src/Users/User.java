@@ -1,7 +1,5 @@
 package Users;
 
-import Ordering.Ordering;
-
 public class User {
     private String userName;
     private String userGmail;
@@ -9,18 +7,8 @@ public class User {
     private int userID;
 
     public User() {}
-    public User(String userName, String userGmail) {
-        this.userName = userName;
-        this.userGmail = userGmail;
-    }
     public User(int userID, String userName, String userGmail, double userBalance) {
         this.userID = userID;
-        this.userName = userName;
-        this.userGmail = userGmail;
-        this.userBalance = userBalance;
-    }
-
-    public User(String userName, String userGmail, double userBalance) {
         this.userName = userName;
         this.userGmail = userGmail;
         this.userBalance = userBalance;

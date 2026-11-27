@@ -10,7 +10,7 @@ public class DataSQL {
     private boolean connectToFile = false;
     private Connection conn;
     private boolean executeSuccessfully;
-    private Set<String> dataTable = Set.of("event", "ordering_table", "users");
+    private final Set<String> dataTable = Set.of("event", "ordering_table", "users");
 
     private void createMainTable() throws SQLException {
         String userTable = this.createUserTable();

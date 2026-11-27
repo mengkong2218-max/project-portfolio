@@ -66,7 +66,7 @@ public class UserPage {
         try {
             MainMenu.controlUser.depositBalanceToUser(user, amount);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -75,40 +75,37 @@ public class UserPage {
         try {
             MainMenu.controlUser.withdrawBalanceFromUser(user, amount);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     private static void changeUsername(User user) {
-        Validation.clearInputBufferBeforeStringInput();
         String newUsername = Validation.stringInput("Enter New Username: ");
         try {
             MainMenu.controlUser.changeUsername(user, newUsername);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     private static void addOrder(User user) {
-        Validation.clearInputBufferBeforeStringInput();
         MainMenu.controlEvent.listAllEvent();
         int eventId = Validation.getPositiveIntInput("Enter Event ID: ");
         int quantity = Validation.getPositiveIntInput("Enter Event Ticket Quantity: ");
         try {
             MainMenu.controlOrder.userOrderTicket(user, eventId, quantity);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     private static void cancelOrder(User user) {
-        Validation.clearInputBufferBeforeStringInput();
         printMyOrder(user);
         String eventName = Validation.stringInput("Enter Event Name: ");
         try {
             MainMenu.controlOrder.userCancelOrderTicket(user, eventName);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
@@ -116,13 +113,12 @@ public class UserPage {
         try {
             MainMenu.controlOrder.printAllUserOrdered(user);
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     private static boolean deleteThisUser(User user) {
         System.out.println("Are You Sure: You wanted to delete this user?");
-        Validation.clearInputBufferBeforeStringInput();
         String ans = Validation.stringInput(" (y/n) ==> ");
         try {
             if (Validation.setOfYes.contains(ans.toLowerCase())) {
@@ -130,7 +126,7 @@ public class UserPage {
                 return true;
             }
         } catch (AppException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
         return false;
     }
